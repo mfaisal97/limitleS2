@@ -1,5 +1,5 @@
-#ifndef utilities
-#define utilities
+#ifndef UTILITIES
+#define UTILITIES
 
 #include <sys/types.h>
 #include <sys/socket.h>

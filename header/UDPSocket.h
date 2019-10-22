@@ -8,8 +8,9 @@
 #include <cerrno>
 #include <cstdio>
 #include <unistd.h>
-#include "../common/utilities.cpp"
 #include <cstring>
+
+#include "../common/utilities.cpp"
 
 class UDPSocket
 {
