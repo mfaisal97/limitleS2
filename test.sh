@@ -1,3 +1,3 @@
 make clean
 make 
-./limitless
+./limitless server 4050 --user

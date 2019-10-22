@@ -29,4 +29,6 @@ class Message
         char* habd;
         ~Message();
 };
+
+#include "../source/Message.cpp"
 #endif // MESSAGE_H

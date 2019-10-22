@@ -1,4 +1,3 @@
-#include "../header/UDPServerSocket.h"
 UDPServerSocket::UDPServerSocket (char *machine,  int port):UDPSocket(machine,  port){ 
     myPort = port;
     makeReceiverSA(&myAddr, myPort);

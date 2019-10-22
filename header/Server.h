@@ -16,4 +16,6 @@ class Server
         void serveRequest();
         ~Server();
 };
+
+#include "../source/Server.cpp"
 #endif // SERVER_H

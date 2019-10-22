@@ -1,5 +1,3 @@
-#include "../header/Message.h"
-
 Message::Message(int operation, void * p_message, size_t p_message_size,int p_rpc_id){
 
 }

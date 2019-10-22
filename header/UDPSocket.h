@@ -46,7 +46,9 @@ class UDPSocket
         void lock();
         void unlock();
         int getSocketHandler();
+        sockaddr_in getmyAddr();
         ~UDPSocket ( );
 };
 
+#include "../source/UDPSocket.cpp"
 #endif // UDPSOCKET_H

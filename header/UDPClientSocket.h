@@ -10,4 +10,6 @@ public:
     bool initializeClient (char * _peerAddr, int _peerPort);
     ~UDPClientSocket ( );
 };
+
+#include "../source/UDPClientSocket.cpp"
 #endif // UDPCLIENTSOCKET_H

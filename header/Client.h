@@ -13,4 +13,6 @@ class Client
         Message * execute(Message * _message);
         ~Client();
 };
+
+#include "../source/Client.cpp"
 #endif // CLIENT_H

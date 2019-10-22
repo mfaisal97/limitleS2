@@ -1,6 +1,3 @@
-#include "../header/UDPClientSocket.h"
-
-
 UDPClientSocket::UDPClientSocket (char *machine,  int port) : UDPSocket(machine,  port) {
     setBroadcast(sock);
     makeLocalSA(&myAddr);

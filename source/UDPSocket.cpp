@@ -1,6 +1,3 @@
-#include "../header/UDPSocket.h"
-
-
 UDPSocket::UDPSocket(char *machine,  int port){
     if(( sock = socket(AF_INET, SOCK_DGRAM, 0))<0) {
         std::perror("socket failed");
@@ -8,22 +5,36 @@ UDPSocket::UDPSocket(char *machine,  int port){
     }
 }
 
-UDPSocket:: ~UDPSocket ( ){
+UDPSocket::~UDPSocket ( ){
     close(sock);
 }
 
 
 
-int UDPSocket:: writeToSocket (char * buffer, int maxBytes ){
+int UDPSocket::writeToSocket (char * buffer, int maxBytes ){
     int aLength = sizeof(peerAddr);
     peerAddr.sin_family = AF_INET;
 
     return sendto(sock, buffer, strlen(buffer), 0, (struct sockaddr *)  &peerAddr, sizeof(struct sockaddr_in));
 }
 
-int UDPSocket:: readFromSocketWithNoBlock (char * buffer, int maxBytes ){
+int UDPSocket::readFromSocketWithNoBlock (char * buffer, int maxBytes ){
     socklen_t aLength;
     peerAddr.sin_family = AF_INET;
 
     return recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength);
+}
+
+int UDPSocket::readFromSocketWithBlock (char * buffer, int maxBytes ){
+    socklen_t aLength;
+    peerAddr.sin_family = AF_INET;
+    int ans;
+    do {
+        ans = recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength);
+    } while (ans==-1);
+    return ans;
+}
+
+sockaddr_in UDPSocket::getmyAddr(){
+    return myAddr;
 }

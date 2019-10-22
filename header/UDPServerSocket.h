@@ -8,4 +8,6 @@ public:
     bool initializeServer (char * _myAddr, int _myPort);
     ~UDPServerSocket ( );
 };
+
+#include "../source/UDPServerSocket.cpp"
 #endif // UDPSERVERSOCKET_H
