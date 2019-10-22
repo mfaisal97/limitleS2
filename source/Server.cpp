@@ -1,5 +1,5 @@
 #include "../header/Server.h"
-
+#include "../header/Message.h"
 Server::Server(char * _listen_hostname, int _listen_port)
 {
 }

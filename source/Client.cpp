@@ -1,4 +1,5 @@
 #include "../header/Client.h"
+#include "../header/Message.h"
 
 Client::Client()
 {
