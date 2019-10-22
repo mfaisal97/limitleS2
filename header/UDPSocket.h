@@ -1,4 +1,4 @@
-UDPSOCKET_H
+#ifndef UDPSOCKET_H
 #define UDPSOCKET_H
 class UDPSocket
 {
