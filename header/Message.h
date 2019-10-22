@@ -1,6 +1,8 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <string>
+
 #define size_t int
 
 enum MessageType { Request, Reply};
@@ -24,6 +26,7 @@ class Message
         void setOperation (int _operation);
         void setMessage (void * message, size_t message_size);
         void setMessageType (MessageType message_type);
+        char* habd;
         ~Message();
 };
 #endif // MESSAGE_H

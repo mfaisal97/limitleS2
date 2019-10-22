@@ -1,21 +1,18 @@
 #include "../header/Server.h"
 
-Server::Server(char * _listen_hostname, int _listen_port)
-{
+Server::Server(char * _listen_hostname, int _listen_port){
+  
 }
 
 
-Server::~Server()
-{
+Server::~Server(){
 }
 
-Message *  Server::getRequest()
-{
+Message *  Server::getRequest(){
   return new Message(0,0,0,0);
 }
 
-Message *  Server::doOperation()
-{
+Message *  Server::doOperation(){
   return new Message(0,0,0,0);
 }
 
