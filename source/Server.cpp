@@ -5,7 +5,7 @@ Server::Server(char * _listen_hostname, int _listen_port){
   char str[INET_ADDRSTRLEN];
   struct sockaddr_in sa = udpServerSocket->getmyAddr();
   inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
-  cout <<"Started Server for:\t" <<  str << "\t\ton:\t" << _listen_port << "\n";
+  cout <<"Started Server :\t\ton:\t" << _listen_port << "\n";
 }
 
 
@@ -16,7 +16,6 @@ Server::~Server(){
 Message *  Server::getRequest(){
   int max_returned = 1024;
   char* returned = new char[max_returned];
-
   udpServerSocket->readFromSocketWithBlock(returned, max_returned);
   return new Message(returned);
 }
@@ -31,13 +30,16 @@ void Server::sendReply (Message * _message){
 
 
 void Server::serveRequest(){
+  cout << "starting service\n";
   while (true){
     Message* m = getRequest();
-    if (strcmp( m->habd, "q" ) == 0){
+    char exitmessage[2]("q");
+    if (strcmp( m->habd, exitmessage ) == 0){
       break;
     }
 
-    cout << "Server got message: \t" << m->habd;
+    cout << "Server got message: \t" << m->habd << "\n";
     sendReply(m);
   }
+  cout << "finished service\n";
 }

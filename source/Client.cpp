@@ -1,7 +1,7 @@
 Client::Client(char * _hostname, int _port)
 {
   udpSocket = new UDPClientSocket(_hostname, _port);
-  cout <<"Started Client to \t" << _hostname << "\t\ton:\t" << _port<< "\n";
+  cout <<"Started Client to \t" << _hostname << "\t\ton:\t" << _port<< "\n\n";
 }
 
 
