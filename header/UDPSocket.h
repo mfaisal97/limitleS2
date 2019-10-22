@@ -1,7 +1,16 @@
 #ifndef UDPSOCKET_H
 #define UDPSOCKET_H
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #include <netinet/in.h>
+#include <cerrno>
+#include <cstdio>
+#include <unistd.h>
+#include "../common/utilities.cpp"
+#include <cstring>
+
 class UDPSocket
 {
     protected:
@@ -15,7 +24,7 @@ class UDPSocket
         bool enabled;
         pthread_mutex_t mutex;
     public:
-        UDPSocket ();
+        UDPSocket(char *machine,  int port);
         void setFilterAddress (char * _filterAddress);
         char * getFilterAddress ();
         bool initializeServer (char * _myAddr, int _myPort);
