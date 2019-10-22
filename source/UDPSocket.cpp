@@ -1,6 +1,7 @@
 #include "../header/UDPSocket.h"
 
 UDPSocket::UDPSocket(){
+
 }
 
 UDPSocket:: ~UDPSocket ( ){
