@@ -1,6 +1,9 @@
 #ifndef CLIENT_H
 #define CLIENT_H
-#include "./header/UDPClientSocket.h"
+
+#include "UDPClientSocket.h"
+#include "Message.h"
+
 class Client
 {
     private:

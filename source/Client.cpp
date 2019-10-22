@@ -1,7 +1,6 @@
 #include "../header/Client.h"
-#include "../header/Message.h"
 
-Client::Client()
+Client::Client(char * _hostname, int _port)
 {
 }
 
@@ -12,5 +11,5 @@ Client::~Client()
 
 Message *  Client::execute(Message * _message)
 {
-  return new Message;
+  return new Message(0,0,0,0);
 }

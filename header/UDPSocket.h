@@ -1,4 +1,6 @@
 #ifndef UDPSOCKET_H
+#define UDPSOCKET_H
+
 #include <netinet/in.h>
 class UDPSocket
 {

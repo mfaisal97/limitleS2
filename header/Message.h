@@ -1,6 +1,8 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#define size_t int
+
 enum MessageType { Request, Reply};
 class Message
 {

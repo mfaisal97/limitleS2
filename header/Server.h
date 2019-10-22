@@ -1,5 +1,9 @@
 #ifndef SERVER_H
 #define SERVER_H
+
+#include "UDPServerSocket.h"
+#include "../header/Message.h"
+
 class Server
 {
     private:
@@ -10,6 +14,6 @@ class Server
     public:
         Server(char * _listen_hostname, int _listen_port);
         void serveRequest();
-        ~server();
+        ~Server();
 };
 #endif // SERVER_H
