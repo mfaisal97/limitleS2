@@ -41,32 +41,49 @@ sockaddr_in UDPSocket::getmyAddr(){
 
  int UDPSocket::readFromSocketWithTimeout (char * buffer, int maxBytes, int timeoutSec, int timeoutMilli){
     int ans;
-    fd_set rset; 
     socklen_t aLength;
-    peerAddr.sin_family = AF_INET;
     struct timeval tv;
     tv.tv_sec = 5;
-    tv.tv_usec = 500000;
+    tv.tv_usec = 0;
+
+    fd_set readfds; 
+    FD_ZERO(&readfds);
+    FD_SET(sock, &readfds);
     
-    // clear the descriptor set 
-    FD_ZERO(&rset); 
-    FD_SET(sock, &rset);
     // select the ready descriptor 
-    int nready = select(sock, &rset, NULL, NULL, &tv);
-    if (nready == 0) 
+    int ret = select(sock+1, &readfds, NULL, NULL, &tv);
+    if (ret > 0) 
     {
-      printf("Timeout occurred!\n");
-    } 
-    do {
-        cout << peerAddr.sin_family<< endl; 
-        if (FD_ISSET(sock, &rset)) {
-            cout << peerAddr.sin_family<< endl; 
-            ans = recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength);
-            cout << buffer[0] << endl;
+      if (recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength) >= 0)
+        {
+            // todo: verify the packet is an acknowledgement
+            // of the packet sent above and not something else...
+            cout << "ack received" << endl;
         }
+        else
+        {
+            cout << "error reading" << endl;
+        }
+    }
+    else if (ret == 0)
+    {
+        cout << "timed out waiting for ack" << endl;
+        // todo: resend the same packet again, or abort the transfer
+    }
+    else
+    {
+        cout << "error selecting" << endl;
+    } 
+    //do {
+        //cout << peerAddr.sin_family<< endl; 
+        //if (FD_ISSET(sock, &rset)) {
+            //cout << peerAddr.sin_family<< endl; 
+            // ans = recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength);
+            //cout << buffer[0] << endl;
+        //}
         
     
-    } while (ans==-1);
-    return ans;
+    //} while (ans==-1);
+    return 1;
     
  }
