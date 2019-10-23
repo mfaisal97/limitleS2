@@ -15,7 +15,7 @@ Message *  Client::execute(Message * _message)
   udpSocket->writeToSocket(_message->habd, -1);
   int max_returned = 1024;
   char* returned = new char[max_returned];
-
-  udpSocket->readFromSocketWithBlock(returned, max_returned);
+  udpSocket->readFromSocketWithTimeout(returned, max_returned, 15, 0);
+ 
   return new Message(returned);
 }
