@@ -50,6 +50,7 @@ int main(int argc, char *argv[]){
         char exitmessage[2]("q");
 
         if(strcmp(strcharacters,exitmessage) == 0){
+          cout << "okay man I am done.\n";
           break;
         }
       }
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]){
     cout << "bas y baba! it is less than 4"; 
     }
 
-    cout << "okay man I am done.";
+    
 
   }else {
     cout << "bas y baba! it is less than 3"; 
