@@ -9,20 +9,21 @@ int main(int argc, char *argv[]){
   if (argc >= 3){    
 
     //client testing
-    if( argc >= 6 && strcmp( argv[1], "client") == 0 && strcmp( argv[4], "test") == 0){
+    if( argc >= 7 && strcmp( argv[1], "client") == 0 && strcmp( argv[4], "test") == 0){
       cout << "Starting client testing!\n";
       Client c (argv[2], std::stoi(argv[3]));
 
       int clientReceived = 0;
-      int maxTest = 40;
+      int maxTest = stoi(argv[5]);
 
       string str = "test";
       char strcharacters[str.size() + 1];
+      str.copy(strcharacters, str.size() + 1);
       strcharacters[str.size()] = '\0';
 
       while (maxTest--){
         Message* m = c.execute(new Message(strcharacters));
-        if(sizeof(m->habd) > 1){
+        if(strcmp( m->habd, "")){
           clientReceived++;
         }
       }
