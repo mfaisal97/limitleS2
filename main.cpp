@@ -28,6 +28,7 @@ int main(int argc, char *argv[]){
       }
 
       cout << "Replies received:\t" << clientReceived << "\n";
+    }
     
     
     //client start
@@ -51,6 +52,7 @@ int main(int argc, char *argv[]){
           break;
         }
       }
+    }
 
       //running servre as test
       else if(strcmp( argv[1], "server" ) == 0){
@@ -60,12 +62,11 @@ int main(int argc, char *argv[]){
       //print server address
 
     }
-
-      cout << "okay man I am done.";
-
-    }else {
+    else {
     cout << "bas y baba! it is less than 4"; 
     }
+
+    cout << "okay man I am done.";
 
   }else {
     cout << "bas y baba! it is less than 3"; 
