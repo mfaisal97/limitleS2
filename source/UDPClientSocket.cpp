@@ -7,6 +7,7 @@ UDPClientSocket::UDPClientSocket (char *machine,  int port) : UDPSocket(machine,
         return;
     }
     makeDestSA(&peerAddr,machine, port);
+    client = true;
 }
 bool UDPClientSocket::initializeClient (char * _peerAddr, int _peerPort){
 

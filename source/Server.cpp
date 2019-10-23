@@ -41,8 +41,8 @@ void Server::serveRequest(){
       char str[INET_ADDRSTRLEN];
       struct sockaddr_in sa = udpServerSocket->getPeerAddr();
       inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
-      UDPClientSocket * child = new UDPClientSocket (str, 56916);
-      cout << "habd: " << str  << "\t"<< sa.sin_port << "\t" << m->habd << "\n";
+      UDPClientSocket * child = new UDPClientSocket (str, ntohs(sa.sin_port));
+      //cout << "habd: " << str  << "\t"<< sa.sin_port << "\t" << m->habd << "\n";
       child->writeToSocket(m->habd, -1);
       break;
     }

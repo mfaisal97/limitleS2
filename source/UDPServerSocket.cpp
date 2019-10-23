@@ -6,7 +6,7 @@ UDPServerSocket::UDPServerSocket (char *machine,  int port):UDPSocket(machine,  
         close(sock);
         return;
     }
-
+    client = false;
 }
 
 bool UDPServerSocket::initializeServer (char * _myAddr, int _myPort){

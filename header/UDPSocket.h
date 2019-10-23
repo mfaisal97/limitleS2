@@ -24,6 +24,7 @@ class UDPSocket
         int peerPort;
         bool enabled;
         pthread_mutex_t mutex;
+        bool client;
     public:
         UDPSocket(char *machine,  int port);
         void setFilterAddress (char * _filterAddress);

@@ -53,11 +53,18 @@ sockaddr_in UDPSocket::getPeerAddr(){
     FD_ZERO(&readfds);
     FD_SET(sock, &readfds);
     
+    sockaddr_in* recvaddr;
+    if (client){
+        recvaddr = new sockaddr_in;
+    }{
+        recvaddr = &peerAddr;
+    }
+    
     // select the ready descriptor 
     int ret = select(sock+1, &readfds, NULL, NULL, &tv);
     if (ret > 0) 
     {
-      if (recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength) >= 0)
+      if (recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  recvaddr, &aLength) >= 0)
         {
             // todo: verify the packet is an acknowledgement
             // of the packet sent above and not something else...
