@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include "UDPServerSocket.h"
+#include "UDPClientSocket.h"
 #include "../header/Message.h"
 
 class Server

@@ -38,6 +38,9 @@ int UDPSocket::readFromSocketWithBlock (char * buffer, int maxBytes ){
 sockaddr_in UDPSocket::getmyAddr(){
     return myAddr;
 }
+sockaddr_in UDPSocket::getPeerAddr(){
+    return peerAddr;
+}
 
  int UDPSocket::readFromSocketWithTimeout (char * buffer, int maxBytes, int timeoutSec, int timeoutMilli){
     int ans;

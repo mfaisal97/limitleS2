@@ -47,6 +47,7 @@ class UDPSocket
         void unlock();
         int getSocketHandler();
         sockaddr_in getmyAddr();
+        sockaddr_in getPeerAddr();
         ~UDPSocket ( );
 };
 
