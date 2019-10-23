@@ -72,7 +72,7 @@ sockaddr_in UDPSocket::getPeerAddr(){
         }
         else
         {
-            cout << "error reading" << endl;
+            //cout << "error reading" << endl;
         }
     }
     else if (ret == 0)
@@ -82,7 +82,7 @@ sockaddr_in UDPSocket::getPeerAddr(){
     }
     else
     {
-        cout << "error selecting" << endl;
+        //cout << "error selecting" << endl;
     } 
     //do {
         //cout << peerAddr.sin_family<< endl; 
