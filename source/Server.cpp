@@ -34,14 +34,21 @@ void Server::serveRequest(){
   int serverReceived = 0;
   while (true){
     Message* m = getRequest();
-    serverReceived++;
-    char exitmessage[2]("q");
-    if (strcmp( m->habd, exitmessage ) == 0){
+    cout << "Server got message: \t" << m->habd << "\n";
+
+    //child
+    if(fork() == 0){
+      sendReply(m);
       break;
     }
-
-    cout << "Server got message: \t" << m->habd << "\n";
-    sendReply(m);
+    //parent
+    else {
+      serverReceived++;
+      char exitmessage[2]("q");
+      if (strcmp( m->habd, exitmessage ) == 0){
+        break;
+      }
+    }
   }
 
   cout << "Server finished serving: \t" << serverReceived << "\n";
