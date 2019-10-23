@@ -1,21 +1,38 @@
 #include <iostream>
 #include "header/Server.h"
 #include "header/Client.h"
-#include "string"
+#include <string>
 
 using namespace std;
 
 int main(int argc, char *argv[]){
-  if (argc >= 3){
+  if (argc >= 3){    
 
-    if(strcmp( argv[1], "server" ) == 0){
+    //client testing
+    if( argc >= 6 && strcmp( argv[1], "client") == 0 && strcmp( argv[4], "test") == 0){
+      cout << "Starting client testing!\n";
+      Client c (argv[2], std::stoi(argv[3]));
 
-      Server s ("", stoi(argv[2]));
-      s.serveRequest();
-      //print server address
+      int clientReceived = 0;
+      int maxTest = 40;
 
-    }else if( argc >= 4 && strcmp( argv[1], "client") == 0){
-      Client c (argv[2], stoi(argv[3]));
+      string str = "test";
+      char strcharacters[str.size() + 1];
+      strcharacters[str.size()] = '\0';
+
+      while (maxTest--){
+        Message* m = c.execute(new Message(strcharacters));
+        if(sizeof(m->habd) > 1){
+          clientReceived++;
+        }
+      }
+
+      cout << "Replies received:\t" << clientReceived << "\n";
+    
+    
+    //client start
+    else if( argc >= 5 && strcmp( argv[1], "client") == 0){
+      Client c (argv[2], std::stoi(argv[3]));
       while (true){
         cout << "Please, enter a message to be sent to the server:\n";
         string str;
@@ -34,6 +51,15 @@ int main(int argc, char *argv[]){
           break;
         }
       }
+
+      //running servre as test
+      else if(strcmp( argv[1], "server" ) == 0){
+
+      Server s ("", std::stoi(argv[2]));
+      s.serveRequest();
+      //print server address
+
+    }
 
       cout << "okay man I am done.";
 

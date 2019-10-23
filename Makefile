@@ -2,7 +2,7 @@
 all: limitless
 
 limitless: 
-	g++ -o limitless main.cpp
+	g++ -std=c++11 -o limitless main.cpp
 
 clean:
 	rm -f limitless

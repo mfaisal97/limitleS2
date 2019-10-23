@@ -31,8 +31,10 @@ void Server::sendReply (Message * _message){
 
 void Server::serveRequest(){
   cout << "starting service\n";
+  int serverReceived = 0;
   while (true){
     Message* m = getRequest();
+    serverReceived++;
     char exitmessage[2]("q");
     if (strcmp( m->habd, exitmessage ) == 0){
       break;
@@ -41,5 +43,6 @@ void Server::serveRequest(){
     cout << "Server got message: \t" << m->habd << "\n";
     sendReply(m);
   }
-  cout << "finished service\n";
+
+  cout << "Server finished serving: \t" << serverReceived << "\n";
 }
