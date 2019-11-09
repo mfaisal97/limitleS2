@@ -8,10 +8,11 @@
 class Peer
 {
     private:
+      UserInfo userInfo;
       Server server;
-      Client client;
     public:
-        Peer(int _listen_port);
+        Peer(string name, string password, int port);
+        SignIn();
         ~Peer();
 };
 
