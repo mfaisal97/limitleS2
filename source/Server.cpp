@@ -51,11 +51,11 @@ void Server::serveRequest(){
       serverReceived++;
       char exitmessage[2]("q");
       if (strcmp( m->habd, exitmessage ) == 0){
-        cout << "okay man I am done.\n";
+        cout << "okay man I am done.\t"<< serverReceived <<endl;
         break;
       }
     }
   }
 
-  cout << "Server finished serving: \t" << serverReceived << "\n";
+  
 }
