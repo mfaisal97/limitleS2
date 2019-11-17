@@ -10,7 +10,7 @@ class Server
     private:
         UDPServerSocket * udpServerSocket;
         Message * getRequest();
-        Message * doOperation();
+        virtual Message * doOperation(Message * message);
         void sendReply (Message * _message);
     public:
         Server(char * _listen_hostname, int _listen_port);
