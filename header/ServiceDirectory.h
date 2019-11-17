@@ -1,17 +1,21 @@
 #ifndef ServiceDirectory_H
 #define ServiceDirectory_H
 
-#include "../header/UDPServerSocket.h"
+#include <map>
+#include <vector>
+
+#include "../header/Server.h"
 #include "../header/Message.h"
 #include "../common/DataStructures.cpp"
 
-class ServiceDirectory
+class ServiceDirectory : public Server
 {
     private:
       std::map<string, UserInfo> Users;
-      UDPServerSocket udpServerSocket;
     public:
         ServiceDirectory(int _listen_port);
+
+        Message * doOperation(Message * message);
 
         //getters
         bool IsUser(string name);
