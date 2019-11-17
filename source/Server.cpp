@@ -2,10 +2,7 @@
 
 Server::Server(char * _listen_hostname, int _listen_port){
   udpServerSocket = new UDPServerSocket(_listen_hostname, _listen_port);
-  char str[INET_ADDRSTRLEN];
-  struct sockaddr_in sa = udpServerSocket->getmyAddr();
-  inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
-  cout <<"Started Server :\t\ton:\t" << _listen_port << "\n";
+  //cout <<"Started Server :\t\ton:\t" << _listen_port << "\n";
 }
 
 
@@ -20,12 +17,17 @@ Message *  Server::getRequest(){
   return new Message(returned);
 }
 
-Message *  Server::doOperation(){
-  return new Message(0,0,0,0);
+Message *  Server::doOperation(Message * message){
+  return message;
 }
 
 void Server::sendReply (Message * _message){
-  udpServerSocket->writeToSocket(_message->habd, -1);
+  char str[INET_ADDRSTRLEN];
+  struct sockaddr_in sa = udpServerSocket->getPeerAddr();
+  inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
+  UDPClientSocket * child = new UDPClientSocket (str, ntohs(sa.sin_port));
+  //cout << "habd: " << str  << "\t"<< sa.sin_port << "\t" << m->habd << "\n";
+  child->writeToSocket(_message->habd, -1);
 }
 
 
@@ -33,17 +35,11 @@ void Server::serveRequest(){
   cout << "starting service\n";
   int serverReceived = 0;
   while (true){
-    Message* m = getRequest();
+    Message* m = doOperation(getRequest());
     cout << "Server got message: \t" << m->habd << "\n";
-
     //child
     if(fork() == 0){
-      char str[INET_ADDRSTRLEN];
-      struct sockaddr_in sa = udpServerSocket->getPeerAddr();
-      inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
-      UDPClientSocket * child = new UDPClientSocket (str, ntohs(sa.sin_port));
-      //cout << "habd: " << str  << "\t"<< sa.sin_port << "\t" << m->habd << "\n";
-      child->writeToSocket(m->habd, -1);
+      sendReply(m);
       break;
     }
     //parent
@@ -57,5 +53,5 @@ void Server::serveRequest(){
     }
   }
 
-  
+
 }
