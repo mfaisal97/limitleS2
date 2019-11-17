@@ -7,7 +7,8 @@
 #include <netinet/in.h>
 #include <cerrno>
 #include <cstdio>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <map>
 
 using namespace std;
 
@@ -42,5 +43,60 @@ void makeReceiverSA(struct sockaddr_in *sa, int port){
     sa->sin_port = htons(port);
     sa-> sin_addr.s_addr = htonl(INADDR_ANY);
 }
+
+string GetBetweenBrackets(string* str){
+  int start = str.find("{");
+  int end = str.find("}");
+  string rt = "";
+
+  if (end >= 0 && start >= 0 && end - start >= 2){
+      rt = str.substr(start + 1, end - start -1);
+      str = str.substr(end+1);
+  }
+
+  return rt
+}
+
+int GetNumberBetweenBracket(string* str){
+  string numStr = GetBetweenBrackets(str);
+  return stoi(numStr);
+}
+
+string MapAsString(map<string, string> m){
+  string str = "";
+  for (std::map<string, string>::iterator it=m.begin(); it!=m.end(); ++it){
+    str = str + "\n{" + it->first + "}\n{" + it->second + "}";
+  }
+  return str;
+}
+
+string IntMapAsString(map<string, int> m){
+  string str = "";
+  for (std::map<string, int>::iterator it=m.begin(); it!=m.end(); ++it){
+    str = str + "\n{" + it->first + "}\n{" + itos(it->second) + "}";
+  }
+  return str;
+}
+
+map<string, string> ParseMap(string * str){
+  map<string, string> m;
+  while(str.size()>0){
+    string key = GetBetweenBrackets(str);
+    string val = GetBetweenBrackets(str);
+    m[key] = val;
+  }
+  return m;
+}
+
+map<string, int> ParseIntMap(string * str){
+  map<string, int> m;
+  while(str.size()>0){
+    string key = GetBetweenBrackets(str);
+    int val = GetNumberBetweenBracket(str);
+    m[key] = val;
+  }
+  return m;
+}
+
 
 #endif
