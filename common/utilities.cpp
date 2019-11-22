@@ -71,6 +71,10 @@ string BoolAsString(bool x){
   return x?"\n{1}" : "\n{0}";
 }
 
+string NumberAsString(int n){
+  return "\n{" + itos(n) + "}";
+}
+
 string MapAsString(map<string, string> m){
   string str = "";
   for (std::map<string, string>::iterator it=m.begin(); it!=m.end(); ++it){
@@ -105,6 +109,25 @@ map<string, int> ParseIntMap(string * str){
     m[key] = val;
   }
   return m;
+}
+
+char* ToCharArray(string str){
+  char strcharacters[str.size() + 1];
+  str.copy(strcharacters, str.size() + 1);
+  strcharacters[str.size()] = '\0';
+
+  return strcharacters;
+}
+
+string FromCharArray(char* array){
+  string str = "";
+  for (auto c : array){
+    if (c != '\0'){
+      str.append(c);
+    }
+  }
+
+  return str;
 }
 
 
