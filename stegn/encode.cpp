@@ -4,6 +4,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <highgui.h>
+#include "../common/DataStructures.cpp"
 
 using namespace std;
 using namespace cv;
@@ -16,7 +17,11 @@ bool isBitSet(char ch, int pos) {
 	return false;
 }
 
-void Encode(string inImageName, string text, string outImageName){
+//returns the content of the resulting image
+string Encode(string text, string outImageName, string inImageName = DefaultImagePath){
+	string content = "";
+	string outImageFullPath = "Data/" + outImageName;
+
 	text = text + "\0";
 	Mat image = imread(inImageName);
 	if(image.empty()) {
@@ -78,6 +83,25 @@ void Encode(string inImageName, string text, string outImageName){
 		exit(-1);
 	}
 
-	imwrite(outImageName,image);
+	imwrite(outImageFullPath,image);
 
+	//fake reading the image
+	ifstream rf(outImageFullPath, ios::binary);
+	if (rf){
+		// get length of file:
+		rf.seekg (0, is.end);
+		int length = is.tellg();
+		rf.seekg (0, is.beg);
+
+		char * buffer = new char [length];
+		rf.read (buffer,length);
+		content = FromCharArray(buffer);
+
+		delete[] buffer;
+		fr.close();
+	}else {
+		cout << "Cannot open Fake \"" + outImageName + "\" for reading" << endl;
+	}
+
+	return content;
 }

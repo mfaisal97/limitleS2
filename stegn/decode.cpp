@@ -13,10 +13,21 @@ bool isBitSet(char ch, int pos) {
 	return false;
 }
 
-string Decode(string inImage){
-	string str;
+// takes the content of the image file and returns the hidden message
+string Decode(string content, string inImage = ".jpeg"){
+	string inImageFullPath = "data/" + inImage;
 
-	Mat image = imread(inImage);
+	//fake writing the image
+	ofstream wf(inImageFullPath, ios::out | ios::binary);
+	if(!wf) {
+		cout << "Cannot open Fake \"" + inImage + "\" for writing" << endl;
+		return 1;
+	}
+	wf.write((char *) &content, sizeof(content));
+	wf.close();
+
+	string str;
+	Mat image = imread(inImageFullPath);
 	if(image.empty()) {
 		cout << "Image Error\n";
 		exit(-1);
@@ -53,4 +64,6 @@ string Decode(string inImage){
 		}
 	}
 	OUT:;
+
+	return str;
 }
