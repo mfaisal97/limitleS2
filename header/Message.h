@@ -4,11 +4,15 @@
 #include "../common/DataStructures.cpp"
 #include <string>
 
-
 #define size_t int
 
 enum MessageType { Request, Reply};
-enum OperationType {SignUp, SignIn, SignOut, UpdateInfo, GetOnline, SearchViewables, GetViewables};
+enum OperationType {
+  SignUp, SignIn, SignOut,
+  UpdateInfo, GetOnline, SearchViewables,
+  GetViewables, AddImage, UpdateImage,
+  splitted};
+
 class Message
 {
     private:
