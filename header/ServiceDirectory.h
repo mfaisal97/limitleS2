@@ -17,6 +17,8 @@ class ServiceDirectory : public Server
 
         Message * doOperation(Message * message);
 
+        bool ValidUserName(string name);
+
         //getters
         bool IsUser(string name);
         //bool IsAuthorized(string name);

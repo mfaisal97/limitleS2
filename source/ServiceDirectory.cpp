@@ -1,4 +1,3 @@
-
 ServiceDirectory::ServiceDirectory(int _listen_port) : Server("", _listen_port){
   cout <<"Started Directory Service:\t\ton:\t" << _listen_port << "\n";
 }
@@ -7,8 +6,12 @@ Message *  ServiceDirectory::doOperation(Message * message){
   return new Message("y wad");
 }
 
+bool ServiceDirectory::ValidUserName(string name){
+  return (!IsUser(name)) && ValidUserNameString(name);
+}
+
 bool ServiceDirectory::SignUp(UserInfo userInfo){
-  if (IsUser(userInfo.authInfo.name)){
+  if (!ValidUserName(userInfo.authInfo.name)){
     return false;
   }
 

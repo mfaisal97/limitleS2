@@ -5,10 +5,14 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <algorithm>
+#include <cctype>
 #include <cerrno>
 #include <cstdio>
 #include <stdlib.h>
 #include <map>
+#include "../stegn/decode.cpp"
+#include "../stegn/encode.cpp"
 
 using namespace std;
 
@@ -128,6 +132,14 @@ string FromCharArray(char* array){
   }
 
   return str;
+}
+
+bool ValidString(string str){
+  return !(str.find('{') != std::string::npos || str.find('}') != std::string::npos || str.size() == 0);
+}
+
+bool ValidUserNameString(string name){
+  return (!any_of(name.begin(), name.end(), ::isdigit)) && ValidString(str);
 }
 
 
