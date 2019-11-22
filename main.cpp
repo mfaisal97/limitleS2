@@ -17,9 +17,7 @@ int main(int argc, char *argv[]){
       int maxTest = stoi(argv[5]);
 
       string str = "test";
-      char strcharacters[str.size() + 1];
-      str.copy(strcharacters, str.size() + 1);
-      strcharacters[str.size()] = '\0';
+      char* strcharacters = ToCharArray(str);
 
       while (maxTest--){
         Message* m = c.execute(new Message(strcharacters));
