@@ -1,9 +1,6 @@
 #ifndef StegImage_H
 #define StegImage_H
 
-#include "../header/Server.h"
-#include "../header/Client.h"
-#include "../header/Message.h"
 
 class StegImage
 {

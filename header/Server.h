@@ -3,7 +3,7 @@
 
 #include "UDPServerSocket.h"
 #include "UDPClientSocket.h"
-#include "../header/Message.h"
+#include "Message.h"
 
 class Server
 {

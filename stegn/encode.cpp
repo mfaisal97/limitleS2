@@ -4,18 +4,9 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <highgui.h>
-#include "../common/DataStructures.cpp"
 
 using namespace std;
 using namespace cv;
-
-bool isBitSet(char ch, int pos) {
-	// 7 6 5 4 3 2 1 0
-	ch = ch >> pos;
-	if(ch & 1)
-		return true;
-	return false;
-}
 
 //returns the content of the resulting image
 string Encode(string text, string outImageName, string inImageName = DefaultImagePath){
@@ -89,16 +80,16 @@ string Encode(string text, string outImageName, string inImageName = DefaultImag
 	ifstream rf(outImageFullPath, ios::binary);
 	if (rf){
 		// get length of file:
-		rf.seekg (0, is.end);
-		int length = is.tellg();
-		rf.seekg (0, is.beg);
+		rf.seekg (0, rf.end);
+		int length = rf.tellg();
+		rf.seekg (0, rf.beg);
 
 		char * buffer = new char [length];
 		rf.read (buffer,length);
 		content = FromCharArray(buffer);
 
 		delete[] buffer;
-		fr.close();
+		rf.close();
 	}else {
 		cout << "Cannot open Fake \"" + outImageName + "\" for reading" << endl;
 	}

@@ -1,7 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+
+#include "../common/utilities.cpp"
+#include "../common/Constants.cpp"
 
 using namespace std;
 using namespace cv;
@@ -21,7 +25,7 @@ string Decode(string content, string inImage = ".jpeg"){
 	ofstream wf(inImageFullPath, ios::out | ios::binary);
 	if(!wf) {
 		cout << "Cannot open Fake \"" + inImage + "\" for writing" << endl;
-		return 1;
+		return "";
 	}
 	wf.write((char *) &content, sizeof(content));
 	wf.close();
@@ -53,7 +57,7 @@ string Decode(string content, string inImage = ".jpeg"){
 						goto OUT;
 
 					bit_count = 0;
-					str.append(ch);
+					str.append(&ch);
 					ch = 0;
 				}
 				else {

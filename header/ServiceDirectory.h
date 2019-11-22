@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "../header/Server.h"
-#include "../header/Message.h"
-#include "../common/DataStructures.cpp"
 
 class ServiceDirectory : public Server
 {

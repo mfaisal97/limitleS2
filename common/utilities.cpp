@@ -10,9 +10,8 @@
 #include <cerrno>
 #include <cstdio>
 #include <stdlib.h>
+#include <string>
 #include <map>
-#include "../stegn/decode.cpp"
-#include "../stegn/encode.cpp"
 
 using namespace std;
 
@@ -49,16 +48,16 @@ void makeReceiverSA(struct sockaddr_in *sa, int port){
 }
 
 string GetBetweenBrackets(string* str){
-  int start = str.find("{");
-  int end = str.find("}");
+  int start = str->find("{");
+  int end = str->find("}");
   string rt = "";
 
   if (end >= 0 && start >= 0 && end - start >= 2){
-      rt = str.substr(start + 1, end - start -1);
-      str = str.substr(end+1);
+      rt = str->substr(start + 1, end - start -1);
+      *str = str->substr(end+1);
   }
 
-  return rt
+  return rt;
 }
 
 int GetNumberBetweenBracket(string* str){
@@ -76,7 +75,7 @@ string BoolAsString(bool x){
 }
 
 string NumberAsString(int n){
-  return "\n{" + itos(n) + "}";
+  return "\n{" + to_string(n) + "}";
 }
 
 string MapAsString(map<string, string> m){
@@ -90,14 +89,14 @@ string MapAsString(map<string, string> m){
 string IntMapAsString(map<string, int> m){
   string str = "";
   for (std::map<string, int>::iterator it=m.begin(); it!=m.end(); ++it){
-    str = str + "\n{" + it->first + "}\n{" + itos(it->second) + "}";
+    str = str + "\n{" + it->first + "}\n{" + to_string(it->second) + "}";
   }
   return str;
 }
 
 map<string, string> ParseMap(string * str){
   map<string, string> m;
-  while(str.size()>0){
+  while(str->length()>0){
     string key = GetBetweenBrackets(str);
     string val = GetBetweenBrackets(str);
     m[key] = val;
@@ -107,7 +106,7 @@ map<string, string> ParseMap(string * str){
 
 map<string, int> ParseIntMap(string * str){
   map<string, int> m;
-  while(str.size()>0){
+  while(str->length()>0){
     string key = GetBetweenBrackets(str);
     int val = GetNumberBetweenBracket(str);
     m[key] = val;
@@ -116,7 +115,7 @@ map<string, int> ParseIntMap(string * str){
 }
 
 char* ToCharArray(string str){
-  char strcharacters[str.size() + 1];
+  char* strcharacters = new char[str.size() + 1];
   str.copy(strcharacters, str.size() + 1);
   strcharacters[str.size()] = '\0';
 
@@ -125,10 +124,12 @@ char* ToCharArray(string str){
 
 string FromCharArray(char* array){
   string str = "";
-  for (auto c : array){
-    if (c != '\0'){
-      str.append(c);
-    }
+  int i = 0;
+
+  while (array[i] != '\0'){
+    char c[1];
+    c[0] = array[i++];
+    str.append(&c[0]);
   }
 
   return str;
@@ -139,7 +140,7 @@ bool ValidString(string str){
 }
 
 bool ValidUserNameString(string name){
-  return (!any_of(name.begin(), name.end(), ::isdigit)) && ValidString(str);
+  return (!any_of(name.begin(), name.end(), ::isdigit)) && ValidString(name);
 }
 
 

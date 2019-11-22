@@ -1,6 +1,7 @@
 #include <string>
 
-#include "utilities.cpp"
+#include "../stegn/decode.cpp"
+#include "../stegn/encode.cpp"
 
 using namespace std;
 
@@ -29,18 +30,17 @@ struct ConnectionInfo{
     string AsString(){
     string str = "";
     str = "\n{";
-    str.append(name);
-    str = str + "}\n{" + portNo + "}";
+    str.append(userAddr);
+    str = str + "}";
+    str = str + NumberAsString(portNo);
     return str;
   }
 
   void Initialize(string* str){
     //get char*
     string addrstr = GetBetweenBrackets(str);
-    userAddr = new char[addrstr.size() + 1]
-    strcpy(userAddr, addrstr.c_str());
-
-    password = GetNumberBetweenBracket(str);
+    userAddr = ToCharArray(addrstr);
+    portNo = GetNumberBetweenBracket(str);
   }
 };
 

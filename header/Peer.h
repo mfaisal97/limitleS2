@@ -3,8 +3,6 @@
 
 #include "../header/Server.h"
 #include "../header/Client.h"
-#include "../header/Message.h"
-#include "../common/DataStructures.cpp"
 
 class Peer : Server
 {
