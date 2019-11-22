@@ -4,15 +4,27 @@
 #include "../header/Server.h"
 #include "../header/Client.h"
 #include "../header/Message.h"
+#include "../common/DataStructures.cpp"
 
-class Peer
+class Peer : Server
 {
     private:
       UserInfo userInfo;
-      Server server;
+      map<string, Clinet> clients;
     public:
         Peer(string name, string password, int port);
-        SignIn();
+
+        bool SignIn();
+        bool SignOut();
+        bool SignUp();
+        bool UpdateConnectionInfo();
+
+        bool UpdateClients();
+
+        vector<string> SearchForRemoteViewables();
+        vector<string> SearchForLocalViewables();
+        bool ShowImage(string ImageID)
+
         ~Peer();
 };
 
