@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
 
       while (maxTest--){
         Message* m = c.execute(new Message(strcharacters));
-        if(strcmp( m->habd, "")){
+        if(strcmp((char*) m->getMessage(), "")){
           clientReceived++;
         }
       }
@@ -34,19 +34,28 @@ int main(int argc, char *argv[]){
     else if( argc >= 5 && strcmp( argv[1], "client") == 0){
       Client c (argv[2], std::stoi(argv[3]));
       while (true){
+
+        //getting input
         cout << "Please, enter a message to be sent to the server:\n";
         string str;
         getline (cin, str);
-        char strcharacters[str.size() + 1];
-        str.copy(strcharacters, str.size() + 1);
-        strcharacters[str.size()] = '\0';
-        //cout << "You entered:\n" << strcharacters << "\n";
-        cout << "Got reply:\n";
-        Message* m = c.execute(new Message(strcharacters));
-        cout << m->habd;
-        cout << "\n\n\n";
-        char exitmessage[2]("q");
+        char* strcharacters = ToCharArray(str);
 
+        cout << "Cannot construct a Message Object\n";
+        // constructing a message for execution
+        Message* firstM = new Message((OperationType)0, (void*)strcharacters, str.length(), 0);
+
+        // Doing the communication
+        Message* m = c.execute(firstM);
+
+        // for debugging purposes
+        cout << "\nSent: \t" + firstM->marshalString() << "\n";
+        cout << "\nReceived: \t" + m->marshalString() << "\n";
+        cout << "Got reply Content:\n" << (char*) m->getMessage();
+        cout << "\n\n\n";
+
+        //checking exiting the program
+        char exitmessage[2]("q");
         if(strcmp(strcharacters,exitmessage) == 0){
           cout << "okay man I am done.\n";
           break;
@@ -65,8 +74,6 @@ int main(int argc, char *argv[]){
     else {
     cout << "bas y baba! it is less than 4";
     }
-
-
 
   }else {
     cout << "bas y baba! it is less than 3";
