@@ -29,7 +29,7 @@ class Message
         char * marshal ();
         string marshalString ();
 
-        int getOperation ();
+        OperationType getOperation ();
         int getRPCId();
         void * getMessage();
         size_t getMessageSize();

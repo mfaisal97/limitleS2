@@ -2,7 +2,7 @@ Message::Message(OperationType _operation, void * p_message, size_t p_message_si
   operation = _operation;
   message = p_message;
   message_size = p_message_size;
-  rpc = p_rpc_id;
+  rpc_id = p_rpc_id;
   message_type = MessageType::Request;
 }
 
@@ -11,11 +11,11 @@ Message::Message(char * _marshalled_base64) : Message(FromCharArray(_marshalled_
 
 Message::Message(string _marshalled_base64){
   string str = _marshalled_base64;
-  message_type = MessageType(GetNumberBetweenBracket(str));
-  operation = OperationType(GetNumberBetweenBracket(str));
-  rpc_id = GetNumberBetweenBracket(str);
-  message_size = GetNumberBetweenBracket(str);
-  message = str;
+  message_type = (MessageType)GetNumberBetweenBracket(&str);
+  operation = (OperationType)GetNumberBetweenBracket(&str);
+  rpc_id = GetNumberBetweenBracket(&str);
+  message_size = GetNumberBetweenBracket(&str);
+  message = (void*) ToCharArray(str);
 }
 
 char * Message::marshal (){
@@ -28,7 +28,7 @@ string Message::marshalString (){
   str = str + NumberAsString(int(operation));
   str = str + NumberAsString(int(rpc_id));
   str = str + NumberAsString(int(message_size));
-  str = str + message;
+  str = str + FromCharArray((char*) message);
 
   return str;
 }
@@ -63,7 +63,7 @@ void Message::setMessage (void * _message, size_t _message_size){
   message_size = _message_size;
 }
 
-void Message::setMessageType (MessageType message_type){
+void Message::setMessageType (MessageType _message_type){
   message_type = _message_type;
 }
 

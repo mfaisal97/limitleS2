@@ -1,21 +1,16 @@
-Client::Client(char * _hostname, int _port)
-{
+Client::Client(char * _hostname, int _port){
   udpSocket = new UDPClientSocket(_hostname, _port);
   cout <<"Started Client to \t" << _hostname << "\t\ton:\t" << _port<< "\n\n";
 }
 
 
-Client::~Client()
-{
+Client::~Client(){
   delete udpSocket;
 }
 
-Message *  Client::execute(Message * _message)
-{
-  udpSocket->writeToSocket(_message->habd, -1);
-  int max_returned = 1024;
-  char* returned = new char[max_returned];
-  udpSocket->readFromSocketWithTimeout(returned, max_returned, 15, 0);
- 
+Message *  Client::execute(Message * _message){
+  udpSocket->writeToSocket(_message->marshal(), -1);
+  char* returned = new char[MAX_MESSAGE_SIZE];
+  udpSocket->readFromSocketWithTimeout(returned, MAX_MESSAGE_SIZE, 15, 0);
   return new Message(returned);
 }
