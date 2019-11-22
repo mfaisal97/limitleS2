@@ -62,6 +62,15 @@ int GetNumberBetweenBracket(string* str){
   return stoi(numStr);
 }
 
+bool GetBoolBetweenBracket(string* str){
+  string numStr = GetBetweenBrackets(str);
+  return stoi(numStr);
+}
+
+string BoolAsString(bool x){
+  return x?"\n{1}" : "\n{0}";
+}
+
 string MapAsString(map<string, string> m){
   string str = "";
   for (std::map<string, string>::iterator it=m.begin(); it!=m.end(); ++it){

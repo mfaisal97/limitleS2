@@ -51,13 +51,13 @@ struct UserInfo{
 
   string AsString(){
     string str = authInfo.AsString() + connectionInfo.AsString();
-    str = str + "\n{" + (online? "1":"0") + "}";
+    str = str + BoolAsString(online);
     return str;
   }
 
   void Initialize(string* str){
     authInfo.Initialize(str);
     connectionInfo.Initialize(str);
-    online = GetNumberBetweenBracket(str);
+    online = GetBoolBetweenBracket(str);
   }
 };
