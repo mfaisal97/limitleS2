@@ -61,3 +61,11 @@ struct UserInfo{
     online = GetBoolBetweenBracket(str);
   }
 };
+
+string UserInfoVectorAsString(vector<UserInfo> v){
+  string str = "";
+  for (int i = 0; i < v.size(); ++i){
+    str = str + v[0].AsString();
+  }
+  return str;
+}

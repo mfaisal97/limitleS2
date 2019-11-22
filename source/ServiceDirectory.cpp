@@ -3,7 +3,65 @@ ServiceDirectory::ServiceDirectory(int _listen_port) : Server("", _listen_port){
 }
 
 Message *  ServiceDirectory::doOperation(Message * message){
-  return new Message("y wad");
+  string messageContent = FromCharArray((char*) message->getMessage());
+  message->setMessageType(MessageType::Reply);
+  switch (message->getOperation()) {
+    case OperationType::SignUp:{
+      // parsing data
+      UserInfo data;
+      data.Initialize(&messageContent);
+      // processing request
+      bool res = SignUp(data);
+      // writing reply
+      message->setMessage((void*)ToCharArray(BoolAsString(res)), BoolAsString(res).length());
+      break;
+    }
+
+
+    case OperationType::SignIn:{
+      // parsing data
+      AuthInfo data;
+      data.Initialize(&messageContent);
+      // processing request
+      bool res = SignIn(data);
+      // writing reply
+      message->setMessage((void*)ToCharArray(BoolAsString(res)), BoolAsString(res).length());
+      break;
+    }
+
+    case OperationType::SignOut:{
+      // parsing data
+      AuthInfo data;
+      data.Initialize(&messageContent);
+      // processing request
+      bool res = SignOut(data);
+      // writing reply
+      message->setMessage((void*)ToCharArray(BoolAsString(res)), BoolAsString(res).length());
+      break;
+    }
+
+    case OperationType::UpdateInfo:{
+      // parsing data
+      UserInfo data;
+      data.Initialize(&messageContent);
+      // processing request
+      bool res = UpdateConnectionInfo(data);
+      // writing reply
+      message->setMessage((void*)ToCharArray(BoolAsString(res)), BoolAsString(res).length());
+      break;
+    }
+
+    case OperationType::GetOnline:{
+      // processing request
+      std::vector<UserInfo> u = GetOnlineUsers();
+      // writing reply
+      message->setMessage((void*)ToCharArray(UserInfoVectorAsString(u)), UserInfoVectorAsString(u).length());
+      break;
+    }
+    default:
+      message->setMessage((void*)ToCharArray(string("{Unidentified Directory Service Request}")), string("{Unidentified Directory Service Request}").size());
+  }
+  return message;
 }
 
 bool ServiceDirectory::ValidUserName(string name){

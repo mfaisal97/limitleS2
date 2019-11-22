@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 
         cout << "Cannot construct a Message Object\n";
         // constructing a message for execution
-        Message* firstM = new Message((OperationType)0, (void*)strcharacters, str.length(), 0);
+        Message* firstM = new Message(OperationType::AddImage, (void*)strcharacters, str.length(), 0);
 
         // Doing the communication
         Message* m = c.execute(firstM);
