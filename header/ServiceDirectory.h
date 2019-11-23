@@ -27,7 +27,7 @@ class ServiceDirectory : public Server
 
         bool UpdateConnectionInfo(UserInfo userInfo);
 
-        vector<UserInfo> GetOnlineUsers();
+        map<string, ConnectionInfo> GetOnlineUsers();
 
         ~ServiceDirectory();
 };

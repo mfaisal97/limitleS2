@@ -11,6 +11,7 @@ class Peer : Server{
     map<string, Clinet> clients;
   public:
     Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
+    Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
 
     // local modifiers
     bool UpdateClients(map<string, ConnectionInfo> connectionsInfo);
@@ -22,6 +23,8 @@ class Peer : Server{
 
     bool CommunicationInfoUpdate();
 
+    bool UpdateStegImage(string stegImageName, string stegImageContent);
+
     //remote modifiers
     bool RemoteSignUp();
     bool RemoteSignIn();
@@ -30,13 +33,20 @@ class Peer : Server{
 
     // local getters
     map<string, string> SearchForStegNames(string userName);
-    bool UpdateStegImage(string stegImageName, string stegImageContent);
-    bool ShowImage(string ImageID);
+    Mat GetImage(string ImageID);
     bool IsClient(string userName);
+    bool IsStegImage(string stegName);
+    bool IsAuthorizedUpdate(string stegImageName, string stegImageContent);
+    string GetUserName();
 
     // remote getters
+    bool RemoteUpdatePeerClients();
     map<string, string> RemoteSearchForStegNames(string userName);
     bool RemoteRetrieveImage(string stegName);
+    bool RemoteUpdateStegImage(string stegName);
+
+    //helpers
+    int GetNextRPCID();
 
     ~Peer();
 };

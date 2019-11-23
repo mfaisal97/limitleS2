@@ -53,9 +53,9 @@ Message *  ServiceDirectory::doOperation(Message * message){
 
     case OperationType::GetOnline:{
       // processing request
-      std::vector<UserInfo> u = GetOnlineUsers();
+      std::map<string, ConnectionInfo> u = GetOnlineUsers();
       // writing reply
-      message->setMessage((void*)ToCharArray(UserInfoVectorAsString(u)), UserInfoVectorAsString(u).length());
+      message->setMessage((void*)ToCharArray(ConnectionInfoMapAsString(u)), ConnectionInfoMapAsString(u).length());
       break;
     }
     default:
@@ -102,6 +102,12 @@ bool ServiceDirectory::UpdateConnectionInfo(UserInfo userInfo){
     //User exist
     if(userInfo.authInfo.password == it->second.authInfo.password){
       it->second.connectionInfo = userInfo.connectionInfo;
+
+      char str[INET_ADDRSTRLEN];
+      struct sockaddr_in sa = udpServerSocket->getPeerAddr();
+      inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
+
+      it->second.connectionInfo.userAddr = str;
       return true;
     }
   }
@@ -122,12 +128,12 @@ bool ServiceDirectory::SignOut(AuthInfo authInfo){
 }
 
 
-vector<UserInfo> ServiceDirectory::GetOnlineUsers(){
-  std::vector<UserInfo> onlineUsers;
+map<string, ConnectionInfo> ServiceDirectory::GetOnlineUsers(){
+  std::map<string, ConnectionInfo> onlineUsers;
 
   for (std::map<string, UserInfo>::iterator it=Users.begin(); it!=Users.end(); ++it){
     if(it->second.online){
-      onlineUsers.push_back(it->second);
+      onlineUsers[it->first] = it->second.connectionInfo;
     }
   }
 
