@@ -32,6 +32,9 @@ class StegImage{
         bool savePlainImage();
         bool removePlainImage();
         bool saveStegImage();
+        string GetHash(){
+          return info.GetHash();
+        }
 
         ~StegImage();
 };
