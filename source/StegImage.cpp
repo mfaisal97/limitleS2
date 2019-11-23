@@ -94,7 +94,7 @@ bool StegImage::savePlainImage(){
 }
 
 bool StegImage::removePlainImage(){
-  return remove(PlainImagesDirectory + info.plainName) == 0;
+  return remove(ToCharArray(PlainImagesDirectory + info.plainName)) == 0;
 }
 
 bool StegImage::saveStegImage(){

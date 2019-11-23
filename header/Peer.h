@@ -18,7 +18,7 @@ class Peer : Server{
     bool UpdateClients(map<string, ConnectionInfo> connectionsInfo);
     bool UpdateClient(string userName, ConnectionInfo connectionInfo);
 
-    bool SetAuthInfo(string userName, password);
+    bool SetAuthInfo(string userName, string password);
     bool SetUserName(string userName);
     bool SetPassword(string password);
 
