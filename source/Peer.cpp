@@ -34,7 +34,7 @@ Message *  Peer::doOperation(Message * message){
     case OperationType::UpdateImage:{
       string res = "";
       string stegName = GetBetweenBrackets(&messageContent);
-      res = BoolAsString(UpdateStegImage(stegName, messageContent);
+      res = BoolAsString(UpdateStegImage(stegName, messageContent));
       message->setMessage((void*)ToCharArray(res), res.length());
       break;
     }
@@ -71,7 +71,7 @@ bool Peer::SetUserName(string userName){
 
 bool Peer::SetPassword(string password){
   if(ValidString(password)){
-    userInfo.password = password;
+    userInfo.authInfo.password = password;
     return true;
   }
   return false;
@@ -87,7 +87,7 @@ map<string, string> Peer::SearchForStegNames(string userName){
   map<string, string> rtr;
   vector<string> filesNames = ListFiles(ToCharArray(StegImagesDirectory));
 
-  for(int i = ; i < filesNames.size(); ++i){
+  for(int i = 0; i < filesNames.size(); ++i){
     StegImage image(filesNames[i] + ".jpeg");
     if (image.hasViews(userName)){
       rtr[image.GetHash()] = image.getPlainName();
