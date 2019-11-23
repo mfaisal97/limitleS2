@@ -15,6 +15,8 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <vector>
+#include <string.h> 
 #include <map>
 
 using namespace std;
