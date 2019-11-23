@@ -99,7 +99,7 @@ map<string, string> Peer::SearchForStegNames(string userName){
 
 bool Peer::UpdateStegImage(string stegImageName, string stegImageContent){
   if(IsAuthorizedUpdate(stegImageName, stegImageContent)){
-    return WriteImageBinaryAsString(StegImagesDirectory + hash + ".jpeg", stegImageContent);
+    return WriteImageBinaryAsString(StegImagesDirectory + stegImageName + ".jpeg", stegImageContent);
   }
   return false;
 }
