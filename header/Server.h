@@ -13,12 +13,12 @@ class Server
         void sendReply (Message * _message);
     protected:
         UDPServerSocket * udpServerSocket;
-    public:
-        Server(char * _listen_hostname, int _listen_port);
-        void serveRequest();
         int getMyPort(){
           return udpServerSocket->getMyPort();
         }
+    public:
+        Server(char * _listen_hostname, int _listen_port);
+        void serveRequest();
         ~Server();
 };
 

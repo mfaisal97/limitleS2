@@ -1,4 +1,4 @@
-ServiceDirectory::ServiceDirectory(int _listen_port) : Server("", _listen_port){
+ServiceDirectory::ServiceDirectory(int _listen_port) : Server(ToCharArray(""), _listen_port){
   cout <<"Started Directory Service:\t\ton:\t" << _listen_port << "\n";
 }
 

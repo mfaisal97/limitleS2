@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <vector>
-#include <string.h> 
+#include <string.h>
 #include <map>
 
 using namespace std;
@@ -185,8 +185,8 @@ string ReadImageBinaryAsString(string imageFullPath){
 }
 
 string GetStringHash(string str){
-  std::hash<std::string> str_hash;
-  string hash = str_hash(str);
+  std::size_t str_hash = std::hash<std::string>{}(str);
+  string hash = to_string(str_hash);
   return hash;
 }
 
@@ -201,7 +201,7 @@ vector<string> ListFiles( const char* path){
       // ignoring unnecessary files {current dir, parent dir, hidden}
       if ( !strcmp( hFile->d_name, "."  )) continue;
       if ( !strcmp( hFile->d_name, ".." )) continue;
-      if ( gIgnoreHidden && ( hFile->d_name[0] == '.' )) continue;
+      if ( hFile->d_name[0] == '.' ) continue;
 
       if (! strstr( hFile->d_name, ".md" )){
         files.push_back(hFile->d_name);

@@ -37,7 +37,9 @@ class UDPSocket
         int readSocketWithNoBlock (char * buffer, int maxBytes );
         int readSocketWithTimeout (char * buffer, int maxBytes, int timeoutSec, int timeoutMilli);
         int readSocketWithBlock (char * buffer, int maxBytes );
-        int getMyPort ();
+        int getMyPort (){
+          return myPort;
+        }
         int getPeerPort ();
         void enable();
         void disable();

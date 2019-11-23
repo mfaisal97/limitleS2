@@ -9,7 +9,7 @@ class Peer : Server{
   private:
     UserInfo userInfo;
     Client serviceDirectory;
-    map<string, Client> clients;
+    map<string, Client*> clients;
   public:
     Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
     Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);

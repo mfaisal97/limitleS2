@@ -1,11 +1,11 @@
-Peer::Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server("", _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo) {
+Peer::Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server(ToCharArray(""), _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo) {
   SetUserName(_name);
   SetPassword(_password);
   CommunicationInfoUpdate();
   cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << endl;
 }
 
-Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server("", _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo){
+Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server(ToCharArray(""), _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo){
   CommunicationInfoUpdate();
   cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << endl;
 }
@@ -53,7 +53,7 @@ bool Peer::UpdateClients(map<string, ConnectionInfo> connectionsInfo){
 }
 
 bool Peer::UpdateClient(string userName, ConnectionInfo connectionInfo){
-  clients[userName] = Client(connectionInfo.userAddr, connectionInfo.portNo);
+  clients[userName] = new Client(connectionInfo.userAddr, connectionInfo.portNo);
   return true;
 }
 
@@ -126,6 +126,11 @@ bool Peer::IsClient(string userName){
   return clients.find(userName) != clients.end();
 }
 
+bool Peer::IsStegImage(string stegName){
+  vector<string> files = ListFiles(ToCharArray(StegImagesDirectory));
+  return std::find(files.begin(), files.end(),stegName + ".jpeg")!=files.end();
+}
+
 bool Peer::IsAuthorizedUpdate(string stegImageName, string stegImageContent){
   return true;
 }
@@ -135,45 +140,51 @@ string Peer::GetUserName(){
 }
 
 bool Peer::RemoteSignUp(){
-  Message request(OperationType::SignUp, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
-  Message reply = serviceDirectory.execute(request);
-  return GetBoolBetweenBracket(FromCharArray((char*)reply.getMessage()));
+  Message* request = new Message(OperationType::SignUp, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
+  Message* reply = serviceDirectory.execute(request);
+  string replystr = FromCharArray((char*)reply->getMessage());
+  return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteSignIn(){
-  Message request(OperationType::SignIn, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
-  Message reply = serviceDirectory.execute(request);
-  return GetBoolBetweenBracket(FromCharArray((char*)reply.getMessage()));
+  Message* request = new Message(OperationType::SignIn, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
+  Message* reply = serviceDirectory.execute(request);
+  string replystr = FromCharArray((char*)reply->getMessage());
+  return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteSignOut(){
-  Message request(OperationType::SignOut, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
-  Message reply = serviceDirectory.execute(request);
-  return GetBoolBetweenBracket(FromCharArray((char*)reply.getMessage()));
+  Message* request = new Message(OperationType::SignOut, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
+  Message* reply = serviceDirectory.execute(request);
+  string replystr = FromCharArray((char*)reply->getMessage());
+  return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteConnectionInfoUpdate(){
-  Message request(OperationType::UpdateInfo, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
-  Message reply = serviceDirectory.execute(request);
-  return GetBoolBetweenBracket(FromCharArray((char*)reply.getMessage()));
+  Message* request = new Message(OperationType::UpdateInfo, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
+  Message* reply = serviceDirectory.execute(request);
+  string replystr = FromCharArray((char*)reply->getMessage());
+  return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteUpdatePeerClients(){
   clients.clear();
-  Message request(OperationType::GetOnline, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
-  Message reply = serviceDirectory.execute(request);
-  map<string, ConnectionInfo> m = ParseConnectionInfoMap(FromCharArray((char*)reply.getMessage()));
+  Message* request = new Message(OperationType::GetOnline, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
+  Message* reply = serviceDirectory.execute(request);
+  string replystr = FromCharArray((char*)reply->getMessage());
+  map<string, ConnectionInfo> m = ParseConnectionInfoMap(&replystr);
   return UpdateClients(m);
 }
 
 
 map<string, string> Peer::RemoteSearchForStegNames(string userName){
   map<string, string> names;
-  Message request(OperationType::SearchViewables, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
+  Message* request = new Message(OperationType::SearchViewables, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
-      Message reply = it->second.execute(request);
-      map<string, string> peerNames = ParseMap(FromCharArray((char*)reply.getMessage()));
+      Message* reply = it->second->execute(request);
+      string replystr = FromCharArray((char*)reply->getMessage());
+      map<string, string> peerNames = ParseMap(&replystr);
       for (auto it2=peerNames.begin(); it2!=peerNames.end(); ++it2){
         names[it2->first] = it2->second;
       }
@@ -183,11 +194,11 @@ map<string, string> Peer::RemoteSearchForStegNames(string userName){
 }
 
 bool Peer::RemoteRetrieveImage(string stegName){
-  Message request(OperationType::GetViewables, ToCharArray(stegName), stegName.size(), GetNextRPCID());
+  Message* request = new Message(OperationType::GetViewables, ToCharArray(stegName), stegName.size(), GetNextRPCID());
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
-      Message reply = it->second.execute(request);
-      string replystr = FromCharArray((char*)reply.getMessage());
+      Message* reply = it->second->execute(request);
+      string replystr = FromCharArray((char*)reply->getMessage());
       if(replystr.size()>0){
         bool done = WriteImageBinaryAsString(StegImagesDirectory + stegName + ".jpeg", replystr);
         if (done){
@@ -203,11 +214,11 @@ int Peer::RemoteUpdateStegImage(string stegName){
   int c = 0;
   if(IsStegImage(stegName)){
     string str = StringAsString(stegName) + StegImage(stegName).AsString();
-    Message request(OperationType::UpdateImage, ToCharArray(str), str.size(), GetNextRPCID());
+    Message* request = new Message(OperationType::UpdateImage, ToCharArray(str), str.size(), GetNextRPCID());
     if (RemoteUpdatePeerClients()){
       for (auto it=clients.begin(); it!=clients.end(); ++it){
-        Message reply = *it->second.execute(&request);
-        string replystr = FromCharArray((char*)reply.getMessage());
+        Message* reply = it->second->execute(request);
+        string replystr = FromCharArray((char*)reply->getMessage());
         if (GetBoolBetweenBracket(&replystr)){
           ++c;
         }
