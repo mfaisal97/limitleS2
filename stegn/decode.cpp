@@ -18,17 +18,13 @@ bool isBitSet(char ch, int pos) {
 }
 
 // takes the content of the image file and returns the hidden message
-string Decode(string content, string inImage = ".jpeg"){
-	string inImageFullPath = "data/" + inImage;
+string Decode(string content, string inImage = ".jpeg", bool alreadyExisting = true){
+	string inImageFullPath = inImage;
 
 	//fake writing the image
-	ofstream wf(inImageFullPath, ios::out | ios::binary);
-	if(!wf) {
-		cout << "Cannot open Fake \"" + inImage + "\" for writing" << endl;
-		return "";
+	if(!alreadyExisting){
+		WriteImageBinaryAsString(inImageFullPath, content);
 	}
-	wf.write((char *) &content, sizeof(content));
-	wf.close();
 
 	string str;
 	Mat image = imread(inImageFullPath);

@@ -11,7 +11,7 @@ using namespace cv;
 //returns the content of the resulting image
 string Encode(string text, string outImageName, string inImageName = DefaultImagePath){
 	string content = "";
-	string outImageFullPath = "Data/" + outImageName;
+	string outImageFullPath = outImageName;
 
 	text = text + "\0";
 	Mat image = imread(inImageName);
@@ -77,22 +77,7 @@ string Encode(string text, string outImageName, string inImageName = DefaultImag
 	imwrite(outImageFullPath,image);
 
 	//fake reading the image
-	ifstream rf(outImageFullPath, ios::binary);
-	if (rf){
-		// get length of file:
-		rf.seekg (0, rf.end);
-		int length = rf.tellg();
-		rf.seekg (0, rf.beg);
-
-		char * buffer = new char [length];
-		rf.read (buffer,length);
-		content = FromCharArray(buffer);
-
-		delete[] buffer;
-		rf.close();
-	}else {
-		cout << "Cannot open Fake \"" + outImageName + "\" for reading" << endl;
-	}
+	content = ReadImageBinaryAsString(outImageFullPath);
 
 	return content;
 }
