@@ -77,10 +77,10 @@ struct StegImageInfo{
   }
 
   void Initialize(string* str){
-    plainName = GetBetweenBrackets(&str);
-    creator = GetBetweenBrackets(&str);
-    remainingViews = ParseIntMap(&str);
-    imageContent = GetBetweenBrackets(&str);
+    plainName = GetBetweenBrackets(str);
+    creator = GetBetweenBrackets(str);
+    remainingViews = ParseIntMap(str);
+    imageContent = GetBetweenBrackets(str);
   }
 
   string GetHash(){
@@ -96,20 +96,20 @@ string UserInfoVectorAsString(vector<UserInfo> v){
   return str;
 }
 
-string ConnectionInfoMapAsString(map<string, connectionInfo> users){
+string ConnectionInfoMapAsString(map<string, ConnectionInfo> users){
   string str = NumberAsString(users.size());
   for (auto it=users.begin(); it!=users.end(); ++it){
-    str = str + StringAsString(it-<first) + it->second.AsString();
+    str = str + StringAsString(it->first) + it->second.AsString();
   }
   return str;
 }
 
 
-map<string, connectionInfo> ParseConnectionInfoMap(string* str){
-  map<string, connectionInfo> users;
-  int n = GetNumberBetweenBracket(&str);
+map<string, ConnectionInfo> ParseConnectionInfoMap(string* str){
+  map<string, ConnectionInfo> users;
+  int n = GetNumberBetweenBracket(str);
   for(int i = 0; i < n; ++i){
-    string name = GetBetweenBrackets(&str);
+    string name = GetBetweenBrackets(str);
     ConnectionInfo ci;
     ci.Initialize(&str);
     users[name] = ci;

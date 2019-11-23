@@ -173,7 +173,7 @@ map<string, string> Peer::RemoteSearchForStegNames(string userName){
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
       Message reply = it->second.execute(request);
-      peerNames = ParseMap(FromCharArray((char*)reply.getMessage()));
+      map<string, string> peerNames = ParseMap(FromCharArray((char*)reply.getMessage()));
       for (auto it2=peerNames.begin(); it2!=peerNames.end(); ++it2){
         names[it2->first] = it2->second;
       }
@@ -189,7 +189,7 @@ bool Peer::RemoteRetrieveImage(string stegName){
       Message reply = it->second.execute(request);
       string replystr = FromCharArray((char*)reply.getMessage());
       if(replystr.size()>0){
-        bool done = WriteImageBinaryAsString(StegImagesDirectory + hash + ".jpeg", replystr);
+        bool done = WriteImageBinaryAsString(StegImagesDirectory + stegName + ".jpeg", replystr);
         if (done){
           return true;
         }
@@ -206,7 +206,7 @@ int Peer::RemoteUpdateStegImage(string stegName){
     Message request(OperationType::UpdateImage, ToCharArray(str), str.size(), GetNextRPCID());
     if (RemoteUpdatePeerClients()){
       for (auto it=clients.begin(); it!=clients.end(); ++it){
-        Message reply = it->second.execute(request);
+        Message reply = *it->second.execute(&request);
         string replystr = FromCharArray((char*)reply.getMessage());
         if (GetBoolBetweenBracket(&replystr)){
           ++c;

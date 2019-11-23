@@ -3,12 +3,13 @@
 
 #include "../header/Server.h"
 #include "../header/Client.h"
+#include "../header/StegImage.h"
 
 class Peer : Server{
   private:
     UserInfo userInfo;
     Client serviceDirectory;
-    map<string, Clinet> clients;
+    map<string, Client> clients;
   public:
     Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
     Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
@@ -43,7 +44,7 @@ class Peer : Server{
     bool RemoteUpdatePeerClients();
     map<string, string> RemoteSearchForStegNames(string userName);
     bool RemoteRetrieveImage(string stegName);
-    bool RemoteUpdateStegImage(string stegName);
+    int RemoteUpdateStegImage(string stegName);
 
     //helpers
     int GetNextRPCID();

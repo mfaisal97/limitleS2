@@ -1,6 +1,6 @@
 #include <iostream>
 #include "header/ServiceDirectory.h"
-#include "header/Client.h"
+#include "header/Peer.h"
 #include <string>
 
 using namespace std;
@@ -32,6 +32,7 @@ int main(int argc, char *argv[]){
 
     //client start
     else if( argc >= 5 && strcmp( argv[1], "client") == 0){
+      Peer peer("m", "m", std::stoi(argv[3]), argv[2], std::stoi(argv[3]));
       Client c (argv[2], std::stoi(argv[3]));
       while (true){
 
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]){
 
         cout << "Cannot construct a Message Object\n";
         // constructing a message for execution
-        Message* firstM = new Message(OperationType::AddImage, (void*)strcharacters, str.length(), 0);
+        Message* firstM = new Message(OperationType::splitted, (void*)strcharacters, str.length(), 0);
 
         // Doing the communication
         Message* m = c.execute(firstM);

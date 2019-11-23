@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string>
 #include <functional>
+#include <fstream>
+#include <sys/stat.h>
+#include <dirent.h>
 #include <map>
 
 using namespace std;
