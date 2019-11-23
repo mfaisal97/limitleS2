@@ -14,6 +14,8 @@ class Peer : Server{
     Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
     Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
 
+    Message * doOperation(Message * message);
+
     // local modifiers
     bool UpdateClients(map<string, ConnectionInfo> connectionsInfo);
     bool UpdateClient(string userName, ConnectionInfo connectionInfo);

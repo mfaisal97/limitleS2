@@ -57,7 +57,7 @@ bool Peer::UpdateClient(string userName, ConnectionInfo connectionInfo){
   return true;
 }
 
-bool Peer::SetAuthInfo(string userName, password){
+bool Peer::SetAuthInfo(string userName, string password){
   return SetUserName(userName) && SetPassword(password);
 }
 
