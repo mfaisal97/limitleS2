@@ -185,4 +185,26 @@ string GetStringHash(string str){
   return hash;
 }
 
+vector<string> ListFiles( const char* path){
+  vector<string>  files;
+
+  DIR* dirFile = opendir( path );
+  if ( dirFile ){
+    struct dirent* hFile;
+    errno = 0;
+    while (( hFile = readdir( dirFile )) != NULL ){
+      // ignoring unnecessary files {current dir, parent dir, hidden}
+      if ( !strcmp( hFile->d_name, "."  )) continue;
+      if ( !strcmp( hFile->d_name, ".." )) continue;
+      if ( gIgnoreHidden && ( hFile->d_name[0] == '.' )) continue;
+
+      if (! strstr( hFile->d_name, ".md" )){
+        files.push_back(hFile->d_name);
+      }
+    }
+    closedir( dirFile );
+  }
+  return files;
+}
+
 #endif
