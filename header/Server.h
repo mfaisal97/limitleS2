@@ -15,6 +15,9 @@ class Server
     public:
         Server(char * _listen_hostname, int _listen_port);
         void serveRequest();
+        int getMyPort(){
+          return udpServerSocket->getMyPort();
+        }
         ~Server();
 };
 
