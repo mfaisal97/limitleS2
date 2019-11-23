@@ -111,7 +111,7 @@ map<string, ConnectionInfo> ParseConnectionInfoMap(string* str){
   for(int i = 0; i < n; ++i){
     string name = GetBetweenBrackets(str);
     ConnectionInfo ci;
-    ci.Initialize(&str);
+    ci.Initialize(str);
     users[name] = ci;
   }
 
