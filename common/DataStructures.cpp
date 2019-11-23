@@ -62,6 +62,32 @@ struct UserInfo{
   }
 };
 
+// Image needs to be same level as its data
+// if data written inside picture,
+// you lose the default picture
+// after multiple writes
+struct StegImageInfo{
+  string plainName;
+  string creator;
+  map<string, int> remainingViews;
+  string imageContent;
+
+  string AsString(){
+    return StringAsString(plainName) + StringAsString(creator) + IntMapAsString(remainingViews) + StringAsString(imageContent);
+  }
+
+  void Initialize(string* str){
+    plainName = GetBetweenBrackets(&str);
+    creator = GetBetweenBrackets(&str);
+    remainingViews = ParseIntMap(&str);
+    imageContent = GetBetweenBrackets(&str);
+  }
+
+  string GetHash(){
+    return GetStringHash(StringAsString(plainName) + StringAsString(creator) + StringAsString(imageContent));
+  }
+};
+
 string UserInfoVectorAsString(vector<UserInfo> v){
   string str = "";
   for (int i = 0; i < v.size(); ++i){

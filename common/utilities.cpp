@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <string>
+#include <functional>
 #include <map>
 
 using namespace std;
@@ -68,6 +69,9 @@ int GetNumberBetweenBracket(string* str){
 bool GetBoolBetweenBracket(string* str){
   string numStr = GetBetweenBrackets(str);
   return stoi(numStr);
+}
+string StringAsString(string str){
+  return "\n{" + str + "}";
 }
 
 string BoolAsString(bool x){
@@ -143,5 +147,42 @@ bool ValidUserNameString(string name){
   return (!any_of(name.begin(), name.end(), ::isdigit)) && ValidString(name);
 }
 
+bool WriteImageBinaryAsString(string imageFullPath, string content){
+  ofstream wf(imageFullPath, ios::out | ios::binary);
+	if(!wf) {
+		cout << "Cannot open Fake \"" + imageFullPath + "\" for writing" << endl;
+		return false;
+	}
+	wf.write((char *) &content, sizeof(content));
+	wf.close();
+  return true;
+}
+
+string ReadImageBinaryAsString(string imageFullPath){
+  string content = "";
+  ifstream rf(imageFullPath, ios::binary);
+  if (rf){
+    // get length of file:
+    rf.seekg (0, rf.end);
+    int length = rf.tellg();
+    rf.seekg (0, rf.beg);
+
+    char * buffer = new char [length];
+    rf.read (buffer,length);
+    content = FromCharArray(buffer);
+
+    delete[] buffer;
+    rf.close();
+  }else {
+    cout << "Cannot open \"" + imageFullPath + "\" for reading" << endl;
+  }
+  return content;
+}
+
+string GetStringHash(string str){
+  std::hash<std::string> str_hash;
+  string hash = str_hash(str);
+  return hash;
+}
 
 #endif
