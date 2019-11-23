@@ -10,8 +10,6 @@
 #include <unistd.h>
 #include <cstring>
 
-#include "../common/utilities.cpp"
-
 class UDPSocket
 {
     protected:

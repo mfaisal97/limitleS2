@@ -1,7 +1,6 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "../common/DataStructures.cpp"
 #include <string>
 
 #define size_t int

@@ -1,9 +1,9 @@
 #ifndef Peer_H
 #define Peer_H
 
+#include "../header/StegImage.h"
 #include "../header/Server.h"
 #include "../header/Client.h"
-#include "../header/StegImage.h"
 
 class Peer : Server{
   private:

@@ -1,6 +1,6 @@
 #include <iostream>
-#include "header/ServiceDirectory.h"
 #include "header/Peer.h"
+#include "header/ServiceDirectory.h"
 #include <string>
 
 using namespace std;

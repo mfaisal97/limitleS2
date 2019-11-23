@@ -1,5 +1,6 @@
 #include <string>
-
+#include "utilities.cpp"
+#include "Constants.cpp"
 #include "../stegn/decode.cpp"
 #include "../stegn/encode.cpp"
 

@@ -15,7 +15,7 @@ StegImage::StegImage(StegImageInfo _info){
 }
 
 StegImage::StegImage(string stegName){
-  string InfoString = decode("", StegImagesDirectory + stegName, true);
+  string InfoString = Decode("", StegImagesDirectory + stegName, true);
   info.Initialize(&InfoString);
 }
 

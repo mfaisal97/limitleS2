@@ -1,6 +1,8 @@
 #ifndef StegImage_H
 #define StegImage_H
 
+#include "../common/DataStructures.cpp"
+
 class StegImage{
     private:
         StegImageInfo info;
