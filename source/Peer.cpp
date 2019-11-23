@@ -2,12 +2,12 @@ Peer::Peer(string _name, string _password, int _peerPort, char* serviceDirectory
   SetUserName(_name);
   SetPassword(_password);
   CommunicationInfoUpdate();
-  cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.port << endl;
+  cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << endl;
 }
 
 Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server("", _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo){
   CommunicationInfoUpdate();
-  cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.port << endl;
+  cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << endl;
 }
 
 // so important y man
