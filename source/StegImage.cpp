@@ -71,8 +71,12 @@ int StegImage::getUserViews(string name){
   return -1;
 }
 
-string StegImage::getCreator(string name){
+string StegImage::getCreator(){
   return info.creator;
+}
+
+string StegImage::getPlainName(){
+  return info.plainName;
 }
 
 string StegImage::AsString(){

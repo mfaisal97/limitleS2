@@ -23,6 +23,7 @@ class StegImage{
         bool hasViews(string name);
         int getUserViews(string name);
         string getCreator();
+        string getPlainName();
 
         string AsString();
         char* AsCharArray();
