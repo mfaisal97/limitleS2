@@ -4,26 +4,41 @@
 #include "../header/Server.h"
 #include "../header/Client.h"
 
-class Peer : Server
-{
-    private:
-      UserInfo userInfo;
-      map<string, Clinet> clients;
-    public:
-        Peer(string name, string password, int port);
+class Peer : Server{
+  private:
+    UserInfo userInfo;
+    Client serviceDirectory;
+    map<string, Clinet> clients;
+  public:
+    Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
 
-        bool SignIn();
-        bool SignOut();
-        bool SignUp();
-        bool UpdateConnectionInfo();
+    // local modifiers
+    bool UpdateClients(map<string, ConnectionInfo> connectionsInfo);
+    bool UpdateClient(string userName, ConnectionInfo connectionInfo);
 
-        bool UpdateClients();
+    bool SetAuthInfo(string userName, password);
+    bool SetUserName(string userName);
+    bool SetPassword(string password);
 
-        vector<string> SearchForRemoteViewables();
-        vector<string> SearchForLocalViewables();
-        bool ShowImage(string ImageID)
+    bool CommunicationInfoUpdate();
 
-        ~Peer();
+    //remote modifiers
+    bool RemoteSignUp();
+    bool RemoteSignIn();
+    bool RemoteSignOut();
+    bool RemoteConnectionInfoUpdate();
+
+    // local getters
+    map<string, string> SearchForStegNames(string userName);
+    bool UpdateStegImage(string stegImageName, string stegImageContent);
+    bool ShowImage(string ImageID);
+    bool IsClient(string userName);
+
+    // remote getters
+    map<string, string> RemoteSearchForStegNames(string userName);
+    bool RemoteRetrieveImage(string stegName);
+
+    ~Peer();
 };
 
 #include "../source/Peer.cpp"
