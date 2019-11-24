@@ -2,8 +2,8 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
-#include "addimagewindow.h"
-#include "viewimagewindow.h"
+#include "../GUI/addimagewindow.h"
+#include "../GUI/viewimagewindow.h"
 #include "../header/Peer.h"
 
 QT_BEGIN_NAMESPACE
