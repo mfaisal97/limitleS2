@@ -2,14 +2,17 @@
 #include "ui_mainwidget.h"
 #include "login.h"
 
+
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainWidget)
 {
+    peer = new Peer(PeerServerPort,ServiceDirectoryAddr,ServiceDirectoryPort);
     ui->setupUi(this);
     Login l;
     l.setModal(true);
     l.exec();
+
 }
 
 MainWidget::~MainWidget()
