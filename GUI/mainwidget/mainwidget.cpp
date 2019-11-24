@@ -6,9 +6,9 @@ MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainWidget)
 {
-    peer = new Peer(PeerServerPort, ToCharArray(ServiceDirectoryAddr),ServiceDirectoryPort);
     ui->setupUi(this);
-    Login l;
+    Login l(peer);
+    l.setPeer(peer);
     l.setModal(true);
     l.exec();
 
@@ -23,6 +23,7 @@ MainWidget::~MainWidget()
 void MainWidget::on_AddImageButton_clicked()
 {
     a = new AddImageWindow(this);
+    a->setPeer(peer);
     a->show();
 
 }
@@ -30,5 +31,6 @@ void MainWidget::on_AddImageButton_clicked()
 void MainWidget::on_ViewImageButton_clicked()
 {
     v= new ViewImageWindow(this);
+    v->setPeer(peer);
     v->show();
 }

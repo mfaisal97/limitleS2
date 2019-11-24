@@ -1,5 +1,13 @@
 #include "../header/Peer.h"
 
+void DebugHere(Message* firstM,  Message* m){
+    // for debugging purposes
+    std::cout << "\nSent: \t" + firstM->marshalString() << "\n";
+    std::cout << "\nReceived: \t" + m->marshalString() << "\n";
+    std::cout << "Got reply Content:\n" << (char*) m->getMessage();
+    std::cout << "\n\n\n";
+}
+
 Peer::Peer(std::string _name, std::string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server("", _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo) {
   SetUserName(_name);
   SetPassword(_password);
@@ -7,7 +15,9 @@ Peer::Peer(std::string _name, std::string _password, int _peerPort, char* servic
   std::cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << std::endl;
 }
 
-Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server(ToCharArray(""), _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo){
+Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server("", _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo){
+  SetUserName(".");
+  SetPassword(".");
   CommunicationInfoUpdate();
   std::cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << std::endl;
 }
@@ -82,6 +92,7 @@ bool Peer::SetPassword(std::string password){
 // man check the format before implementation :D
 bool Peer::CommunicationInfoUpdate(){
   userInfo.connectionInfo.portNo = getMyPort();
+  userInfo.connectionInfo.userAddr = ToCharArray(std::string("."));
   return true;
 }
 
@@ -142,10 +153,17 @@ std::string Peer::GetUserName(){
 }
 
 bool Peer::RemoteSignUp(){
-  Message* request = new Message(OperationType::SignUp, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
+  std::cout << "trying to signUp\n";
+  std::string requeststr = userInfo.AsString();
+  char* requestStrChar = ToCharArray(requeststr);
+  Message* request = new Message(OperationType::SignUp, (void*)requestStrChar, requeststr.size(), GetNextRPCID());
+  DebugHere(request, request);
   Message* reply = serviceDirectory.execute(request);
+  DebugHere(request, request);
   std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
+  std::cout <<"finished signing up\n";
+  return true;
 }
 
 bool Peer::RemoteSignIn(){

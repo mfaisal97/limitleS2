@@ -34,7 +34,7 @@ void Server::serveRequest(){
   int serverReceived = 0;
   while (true){
     Message* m = doOperation(getRequest());
-    std::cout << "Server got message: \t" <<(char*) m->getMessage() << "\n";
+    //std::cout << "Server got message: \t" <<(char*) m->getMessage() << "\n";
     //child
     if(fork() == 0){
       sendReply(m);

@@ -1,6 +1,7 @@
 #include <iostream>
-#include "header/Peer.h"
-#include "header/ServiceDirectory.h"
+#include "../header/Peer.h"
+#include "../header/Client.h"
+#include "../header/ServiceDirectory.h"
 #include <string>
 
 using namespace std;
@@ -32,36 +33,40 @@ int main(int argc, char *argv[]){
 
     //client start
     else if( argc >= 5 && strcmp( argv[1], "client") == 0){
-      Peer peer("m", "m", std::stoi(argv[3]), argv[2], std::stoi(argv[3]));
-      Client c (argv[2], std::stoi(argv[3]));
-      while (true){
-
-        //getting input
-        cout << "Please, enter a message to be sent to the server:\n";
-        string str;
-        getline (cin, str);
-        char* strcharacters = ToCharArray(str);
-
-        cout << "Cannot construct a Message Object\n";
-        // constructing a message for execution
-        Message* firstM = new Message(OperationType::splitted, (void*)strcharacters, str.length(), 0);
-
-        // Doing the communication
-        Message* m = c.execute(firstM);
-
-        // for debugging purposes
-        cout << "\nSent: \t" + firstM->marshalString() << "\n";
-        cout << "\nReceived: \t" + m->marshalString() << "\n";
-        cout << "Got reply Content:\n" << (char*) m->getMessage();
-        cout << "\n\n\n";
-
-        //checking exiting the program
-        char exitmessage[2]("q");
-        if(strcmp(strcharacters,exitmessage) == 0){
-          cout << "okay man I am done.\n";
-          break;
-        }
-      }
+      Peer peer("mickey", "mouse", 4051, argv[2], std::stoi(argv[3]));
+      peer.SetAuthInfo("mickey_", "mouse_");
+      peer.RemoteSignUp();
+      peer.RemoteSignIn();
+      peer.RemoteSignOut();
+      // Client c (argv[2], std::stoi(argv[3]));
+      // while (true){
+      //
+      //   //getting input
+      //   cout << "Please, enter a message to be sent to the server:\n";
+      //   string str;
+      //   getline (cin, str);
+      //   char* strcharacters = ToCharArray(str);
+      //
+      //   cout << "Cannot construct a Message Object\n";
+      //   // constructing a message for execution
+      //   Message* firstM = new Message(OperationType::splitted, (void*)strcharacters, str.length(), 0);
+      //
+      //   // Doing the communication
+      //   Message* m = c.execute(firstM);
+      //
+      //   // for debugging purposes
+      //   cout << "\nSent: \t" + firstM->marshalString() << "\n";
+      //   cout << "\nReceived: \t" + m->marshalString() << "\n";
+      //   cout << "Got reply Content:\n" << (char*) m->getMessage();
+      //   cout << "\n\n\n";
+      //
+      //   //checking exiting the program
+      //   char exitmessage[2]("q");
+      //   if(strcmp(strcharacters,exitmessage) == 0){
+      //     cout << "okay man I am done.\n";
+      //     break;
+      //   }
+      // }
     }
 
       //running servre as test

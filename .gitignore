@@ -73,3 +73,8 @@ Thumbs.db
 CMakeLists.txt.user
 .vs
 .vscode
+
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+limitleS2

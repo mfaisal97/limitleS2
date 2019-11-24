@@ -17,6 +17,9 @@ class MainWidget : public QWidget
 
 public:
     MainWidget(QWidget *parent = nullptr);
+    void setPeer(Peer* _peer){
+        peer = _peer;
+    }
     ~MainWidget();
 
 private slots:

@@ -1,10 +1,20 @@
 #include "../header/ServiceDirectory.h"
 
+// void DebugHere(Message* firstM,  Message* m){
+//     // for debugging purposes
+//     std::cout << "\nSent: \t" + firstM->marshalString() << "\n";
+//     std::cout << "\nReceived: \t" + m->marshalString() << "\n";
+//     std::cout << "Got reply Content:\n" << (char*) m->getMessage();
+//     std::cout << "\n\n\n";
+// }
+
+
 ServiceDirectory::ServiceDirectory(int _listen_port) : Server(ToCharArray(""), _listen_port){
   std::cout <<"Started Directory Service:\t\ton:\t" << _listen_port << "\n";
 }
 
 Message *  ServiceDirectory::doOperation(Message * message){
+  std::cout << "\nReceived: \t" + message->marshalString() << "\n";
   std::string messageContent = FromCharArray((char*) message->getMessage());
   message->setMessageType(MessageType::Reply);
   switch (message->getOperation()) {
@@ -63,6 +73,7 @@ Message *  ServiceDirectory::doOperation(Message * message){
     default:
       message->setMessage((void*)ToCharArray(std::string("{Unidentified Directory Service Request}")), std::string("{Unidentified Directory Service Request}").size());
   }
+  std::cout << "\nSent: \t" + message->marshalString() << "\n";
   return message;
 }
 

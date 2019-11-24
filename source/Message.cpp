@@ -72,3 +72,11 @@ void Message::setMessageType (MessageType _message_type){
 Message::~Message(){
 
 }
+
+// void DebugHere(Message* firstM,  Message* m){
+//     // for debugging purposes
+//     std::cout << "\nSent: \t" + firstM->marshalString() << "\n";
+//     std::cout << "\nReceived: \t" + m->marshalString() << "\n";
+//     std::cout << "Got reply Content:\n" << (char*) m->getMessage();
+//     std::cout << "\n\n\n";
+// }

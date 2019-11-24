@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <map>
 #include <string>
+#include "../../header/Peer.h"
 
 namespace Ui {
 class ViewImageWindow;
@@ -16,16 +17,18 @@ class ViewImageWindow : public QDialog
 
 public:
     explicit ViewImageWindow(QWidget *parent = nullptr);
+    void setPeer(Peer* _peer){
+        peer = _peer;
+    }
     ~ViewImageWindow();
 
 private slots:
     void on_pushButton_clicked();
-
     void on_pushButton_2_clicked();
-
     void on_pushButton_3_clicked();
 
 private:
+    Peer* peer;
     Ui::ViewImageWindow *ui;
 };
 
