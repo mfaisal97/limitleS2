@@ -5,28 +5,34 @@
 #include "../header/Server.h"
 #include "../header/Client.h"
 
+#include "../common/utilities.h"
+
+#include <opencv2/core/mat.hpp>
+#include <string>
+#include <map>
+
 class Peer : Server{
   private:
     UserInfo userInfo;
     Client serviceDirectory;
-    map<string, Client*> clients;
+    std::map<std::string, Client*> clients;
   public:
-    Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
+    Peer(std::string _name, std::string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
     Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
 
     Message * doOperation(Message * message);
 
     // local modifiers
-    bool UpdateClients(map<string, ConnectionInfo> connectionsInfo);
-    bool UpdateClient(string userName, ConnectionInfo connectionInfo);
+    bool UpdateClients(std::map<std::string, ConnectionInfo> connectionsInfo);
+    bool UpdateClient(std::string userName, ConnectionInfo connectionInfo);
 
-    bool SetAuthInfo(string userName, string password);
-    bool SetUserName(string userName);
-    bool SetPassword(string password);
+    bool SetAuthInfo(std::string userName, std::string password);
+    bool SetUserName(std::string userName);
+    bool SetPassword(std::string password);
 
     bool CommunicationInfoUpdate();
 
-    bool UpdateStegImage(string stegImageName, string stegImageContent);
+    bool UpdateStegImage(std::string stegImageName, std::string stegImageContent);
 
     //remote modifiers
     bool RemoteSignUp();
@@ -35,18 +41,18 @@ class Peer : Server{
     bool RemoteConnectionInfoUpdate();
 
     // local getters
-    map<string, string> SearchForStegNames(string userName);
-    Mat GetImage(string ImageID);
-    bool IsClient(string userName);
-    bool IsStegImage(string stegName);
-    bool IsAuthorizedUpdate(string stegImageName, string stegImageContent);
-    string GetUserName();
+    std::map<std::string, std::string> SearchForStegNames(std::string userName);
+    cv::Mat GetImage(std::string ImageID);
+    bool IsClient(std::string userName);
+    bool IsStegImage(std::string stegName);
+    bool IsAuthorizedUpdate(std::string stegImageName, std::string stegImageContent);
+    std::string GetUserName();
 
     // remote getters
     bool RemoteUpdatePeerClients();
-    map<string, string> RemoteSearchForStegNames(string userName);
-    bool RemoteRetrieveImage(string stegName);
-    int RemoteUpdateStegImage(string stegName);
+    std::map<std::string, std::string> RemoteSearchForStegNames(std::string userName);
+    bool RemoteRetrieveImage(std::string stegName);
+    int RemoteUpdateStegImage(std::string stegName);
 
     //helpers
     int GetNextRPCID();
@@ -54,5 +60,5 @@ class Peer : Server{
     ~Peer();
 };
 
-#include "../source/Peer.cpp"
+//#include "../source/Peer.cpp"
 #endif //Peer_H

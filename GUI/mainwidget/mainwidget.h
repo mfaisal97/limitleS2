@@ -2,9 +2,10 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
-#include "../GUI/addimagewindow.h"
-#include "../GUI/viewimagewindow.h"
-#include "../header/Peer.h"
+#include "../addimagewindow/addimagewindow.h"
+#include "../viewimagewindow/viewimagewindow.h"
+#include "../login/login.h"
+#include "../../header/Peer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWidget; }

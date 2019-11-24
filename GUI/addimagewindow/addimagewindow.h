@@ -2,8 +2,9 @@
 #define ADDIMAGEWINDOW_H
 
 #include <QDialog>
-#include<vector>
-#include<string>
+#include <vector>
+#include <string>
+#include <QTableWidgetItem>
 
 namespace Ui {
 class AddImageWindow;

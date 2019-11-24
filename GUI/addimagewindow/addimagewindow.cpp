@@ -1,8 +1,6 @@
 #include "addimagewindow.h"
 #include "ui_addimagewindow.h"
-#include <QTableWidgetItem>
-#include <string>
-#include <vector>
+
 using namespace std;
 AddImageWindow::AddImageWindow(QWidget *parent) :
     QDialog(parent),

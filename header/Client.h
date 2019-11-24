@@ -2,6 +2,9 @@
 #define CLIENT_H
 
 #include "UDPClientSocket.h"
+#include "Message.h"
+#include <iostream>
+#include "../common/Constants.h"
 
 class Client
 {
@@ -13,5 +16,5 @@ class Client
         ~Client();
 };
 
-#include "../source/Client.cpp"
+//#include "../source/Client.cpp"
 #endif // CLIENT_H

@@ -1,4 +1,6 @@
-UDPServerSocket::UDPServerSocket (char *machine,  int port):UDPSocket(machine,  port){ 
+#include "../header/UDPServerSocket.h"
+
+UDPServerSocket::UDPServerSocket (char *machine,  int port):UDPSocket(machine,  port){
     myPort = port;
     makeReceiverSA(&myAddr, myPort);
     if( bind(sock,(struct sockaddr *) &myAddr, sizeof(struct sockaddr_in))!= 0){

@@ -1,3 +1,5 @@
+#include "../header/UDPSocket.h"
+
 UDPSocket::UDPSocket(char *machine,  int port){
     if(( sock = socket(AF_INET, SOCK_DGRAM, 0))<0) {
         std::perror("socket failed");
@@ -49,26 +51,26 @@ sockaddr_in UDPSocket::getPeerAddr(){
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
-    fd_set readfds; 
+    fd_set readfds;
     FD_ZERO(&readfds);
     FD_SET(sock, &readfds);
-    
+
     sockaddr_in* recvaddr;
     if (client){
         recvaddr = new sockaddr_in;
     }{
         recvaddr = &peerAddr;
     }
-    
-    // select the ready descriptor 
+
+    // select the ready descriptor
     int ret = select(sock+1, &readfds, NULL, NULL, &tv);
-    if (ret > 0) 
+    if (ret > 0)
     {
       if (recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  recvaddr, &aLength) >= 0)
         {
             // todo: verify the packet is an acknowledgement
             // of the packet sent above and not something else...
-            cout << "ack received" << endl;
+            std::cout << "ack received" << std::endl;
         }
         else
         {
@@ -77,23 +79,23 @@ sockaddr_in UDPSocket::getPeerAddr(){
     }
     else if (ret == 0)
     {
-        cout << "timed out waiting for ack" << endl;
+        std::cout << "timed out waiting for ack" << std::endl;
         // todo: resend the same packet again, or abort the transfer
     }
     else
     {
         //cout << "error selecting" << endl;
-    } 
+    }
     //do {
-        //cout << peerAddr.sin_family<< endl; 
+        //cout << peerAddr.sin_family<< endl;
         //if (FD_ISSET(sock, &rset)) {
-            //cout << peerAddr.sin_family<< endl; 
+            //cout << peerAddr.sin_family<< endl;
             // ans = recvfrom(sock, buffer, maxBytes, 0, (struct sockaddr *)  &peerAddr, &aLength);
             //cout << buffer[0] << endl;
         //}
-        
-    
+
+
     //} while (ans==-1);
     return 1;
-    
+
  }

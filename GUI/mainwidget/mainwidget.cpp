@@ -1,6 +1,5 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
-#include "../GUI/login.h"
 
 
 MainWidget::MainWidget(QWidget *parent)

@@ -22,5 +22,5 @@ class Server
         ~Server();
 };
 
-#include "../source/Server.cpp"
+//#include "../source/Server.cpp"
 #endif // SERVER_H

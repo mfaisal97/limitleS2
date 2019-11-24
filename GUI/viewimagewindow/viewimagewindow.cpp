@@ -1,8 +1,5 @@
 #include "viewimagewindow.h"
 #include "ui_viewimagewindow.h"
-#include <QPixmap>
-#include <map>
-#include <string>
 using namespace std;
 
 ViewImageWindow::ViewImageWindow(QWidget *parent) :

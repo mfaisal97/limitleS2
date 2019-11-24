@@ -1,13 +1,15 @@
 #ifndef UDPSOCKET_H
 #define UDPSOCKET_H
 
-#include <sys/types.h>
+// #include <sys/types.h>
 #include <sys/socket.h>
-#include <netdb.h>
+// #include <netdb.h>
 #include <netinet/in.h>
-#include <cerrno>
-#include <cstdio>
+// #include <cerrno>
+// #include <cstdio>
 #include <unistd.h>
+#include <arpa/inet.h>
+#include <iostream>
 #include <cstring>
 
 class UDPSocket
@@ -52,5 +54,5 @@ class UDPSocket
         ~UDPSocket ( );
 };
 
-#include "../source/UDPSocket.cpp"
+//#include "../source/UDPSocket.cpp"
 #endif // UDPSOCKET_H

@@ -1,29 +1,31 @@
-Peer::Peer(string _name, string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server(ToCharArray(""), _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo) {
+#include "../header/Peer.h"
+
+Peer::Peer(std::string _name, std::string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server("", _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo) {
   SetUserName(_name);
   SetPassword(_password);
   CommunicationInfoUpdate();
-  cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << endl;
+  std::cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << std::endl;
 }
 
 Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo) : Server(ToCharArray(""), _peerPort), serviceDirectory(serviceDirectoryHostname, _serviceDirectoryPortNo){
   CommunicationInfoUpdate();
-  cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << endl;
+  std::cout << "Starting a new peer node on port:\t\t" << userInfo.connectionInfo.portNo << std::endl;
 }
 
 // so important y man
 Message *  Peer::doOperation(Message * message){
-  string messageContent = FromCharArray((char*) message->getMessage());
+  std::string messageContent = FromCharArray((char*) message->getMessage());
   message->setMessageType(MessageType::Reply);
 
   switch (message->getOperation()) {
     case OperationType::SearchViewables:{
-      map<string, string> res = SearchForStegNames(messageContent);
+      std::map<std::string, std::string> res = SearchForStegNames(messageContent);
       message->setMessage((void*)ToCharArray(MapAsString(res)), MapAsString(res).length());
       break;
     }
 
     case OperationType::GetViewables:{
-      string res = "";
+      std::string res = "";
       if(IsStegImage(messageContent)){
         res = StegImage(messageContent).AsString();
       }
@@ -32,19 +34,19 @@ Message *  Peer::doOperation(Message * message){
     }
 
     case OperationType::UpdateImage:{
-      string res = "";
-      string stegName = GetBetweenBrackets(&messageContent);
+      std::string res = "";
+      std::string stegName = GetBetweenBrackets(&messageContent);
       res = BoolAsString(UpdateStegImage(stegName, messageContent));
       message->setMessage((void*)ToCharArray(res), res.length());
       break;
     }
     default:
-      message->setMessage((void*)ToCharArray(string("{Unidentified Directory Service Request}")), string("{Unidentified Directory Service Request}").size());
+      message->setMessage((void*)ToCharArray(std::string("{Unidentified Directory Service Request}")), std::string("{Unidentified Directory Service Request}").size());
   }
   return message;
 }
 
-bool Peer::UpdateClients(map<string, ConnectionInfo> connectionsInfo){
+bool Peer::UpdateClients(std::map<std::string, ConnectionInfo> connectionsInfo){
   bool done = true;
   for (auto it=connectionsInfo.begin(); it!=connectionsInfo.end(); ++it){
     done = done && UpdateClient(it->first, it->second);
@@ -52,16 +54,16 @@ bool Peer::UpdateClients(map<string, ConnectionInfo> connectionsInfo){
   return true;
 }
 
-bool Peer::UpdateClient(string userName, ConnectionInfo connectionInfo){
+bool Peer::UpdateClient(std::string userName, ConnectionInfo connectionInfo){
   clients[userName] = new Client(connectionInfo.userAddr, connectionInfo.portNo);
   return true;
 }
 
-bool Peer::SetAuthInfo(string userName, string password){
+bool Peer::SetAuthInfo(std::string userName, std::string password){
   return SetUserName(userName) && SetPassword(password);
 }
 
-bool Peer::SetUserName(string userName){
+bool Peer::SetUserName(std::string userName){
   if (ValidUserNameString(userName)){
     userInfo.authInfo.name = userName;
     return true;
@@ -69,7 +71,7 @@ bool Peer::SetUserName(string userName){
   return false;
 }
 
-bool Peer::SetPassword(string password){
+bool Peer::SetPassword(std::string password){
   if(ValidString(password)){
     userInfo.authInfo.password = password;
     return true;
@@ -83,9 +85,9 @@ bool Peer::CommunicationInfoUpdate(){
   return true;
 }
 
-map<string, string> Peer::SearchForStegNames(string userName){
-  map<string, string> rtr;
-  vector<string> filesNames = ListFiles(ToCharArray(StegImagesDirectory));
+std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName){
+  std::map<std::string, std::string> rtr;
+  std::vector<std::string> filesNames = ListFiles(ToCharArray(StegImagesDirectory));
 
   for(int i = 0; i < filesNames.size(); ++i){
     StegImage image(filesNames[i] + ".jpeg");
@@ -97,24 +99,24 @@ map<string, string> Peer::SearchForStegNames(string userName){
   return rtr;
 }
 
-bool Peer::UpdateStegImage(string stegImageName, string stegImageContent){
+bool Peer::UpdateStegImage(std::string stegImageName, std::string stegImageContent){
   if(IsAuthorizedUpdate(stegImageName, stegImageContent)){
     return WriteImageBinaryAsString(StegImagesDirectory + stegImageName + ".jpeg", stegImageContent);
   }
   return false;
 }
 
-Mat Peer::GetImage(string ImageID){
+cv::Mat Peer::GetImage(std::string ImageID){
   StegImage stegImage(ImageID + ".jpeg");
-  Mat image;
+  cv::Mat image;
 
   if (stegImage.increaseViews(GetUserName(), -1)){
     stegImage.savePlainImage();
     stegImage.saveStegImage();
 
-    image = imread(PlainImagesDirectory + stegImage.getPlainName());
+    image = cv::imread(PlainImagesDirectory + stegImage.getPlainName());
     if(image.empty()) {
-      cout << "Image Error\n";
+      std::cout << "Image Error\n";
       exit(-1);
     }
     stegImage.removePlainImage();
@@ -122,48 +124,48 @@ Mat Peer::GetImage(string ImageID){
   return image;
 }
 
-bool Peer::IsClient(string userName){
+bool Peer::IsClient(std::string userName){
   return clients.find(userName) != clients.end();
 }
 
-bool Peer::IsStegImage(string stegName){
-  vector<string> files = ListFiles(ToCharArray(StegImagesDirectory));
+bool Peer::IsStegImage(std::string stegName){
+  std::vector<std::string> files = ListFiles(ToCharArray(StegImagesDirectory));
   return std::find(files.begin(), files.end(),stegName + ".jpeg")!=files.end();
 }
 
-bool Peer::IsAuthorizedUpdate(string stegImageName, string stegImageContent){
+bool Peer::IsAuthorizedUpdate(std::string stegImageName, std::string stegImageContent){
   return true;
 }
 
-string Peer::GetUserName(){
+std::string Peer::GetUserName(){
   return userInfo.authInfo.name;
 }
 
 bool Peer::RemoteSignUp(){
   Message* request = new Message(OperationType::SignUp, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
-  string replystr = FromCharArray((char*)reply->getMessage());
+  std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteSignIn(){
   Message* request = new Message(OperationType::SignIn, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
-  string replystr = FromCharArray((char*)reply->getMessage());
+  std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteSignOut(){
   Message* request = new Message(OperationType::SignOut, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
-  string replystr = FromCharArray((char*)reply->getMessage());
+  std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
 }
 
 bool Peer::RemoteConnectionInfoUpdate(){
   Message* request = new Message(OperationType::UpdateInfo, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
-  string replystr = FromCharArray((char*)reply->getMessage());
+  std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
 }
 
@@ -171,20 +173,20 @@ bool Peer::RemoteUpdatePeerClients(){
   clients.clear();
   Message* request = new Message(OperationType::GetOnline, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
-  string replystr = FromCharArray((char*)reply->getMessage());
-  map<string, ConnectionInfo> m = ParseConnectionInfoMap(&replystr);
+  std::string replystr = FromCharArray((char*)reply->getMessage());
+  std::map<std::string, ConnectionInfo> m = ParseConnectionInfoMap(&replystr);
   return UpdateClients(m);
 }
 
 
-map<string, string> Peer::RemoteSearchForStegNames(string userName){
-  map<string, string> names;
+std::map<std::string, std::string> Peer::RemoteSearchForStegNames(std::string userName){
+  std::map<std::string, std::string> names;
   Message* request = new Message(OperationType::SearchViewables, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
       Message* reply = it->second->execute(request);
-      string replystr = FromCharArray((char*)reply->getMessage());
-      map<string, string> peerNames = ParseMap(&replystr);
+      std::string replystr = FromCharArray((char*)reply->getMessage());
+      std::map<std::string, std::string> peerNames = ParseMap(&replystr);
       for (auto it2=peerNames.begin(); it2!=peerNames.end(); ++it2){
         names[it2->first] = it2->second;
       }
@@ -193,12 +195,12 @@ map<string, string> Peer::RemoteSearchForStegNames(string userName){
   return names;
 }
 
-bool Peer::RemoteRetrieveImage(string stegName){
+bool Peer::RemoteRetrieveImage(std::string stegName){
   Message* request = new Message(OperationType::GetViewables, ToCharArray(stegName), stegName.size(), GetNextRPCID());
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
       Message* reply = it->second->execute(request);
-      string replystr = FromCharArray((char*)reply->getMessage());
+      std::string replystr = FromCharArray((char*)reply->getMessage());
       if(replystr.size()>0){
         bool done = WriteImageBinaryAsString(StegImagesDirectory + stegName + ".jpeg", replystr);
         if (done){
@@ -210,15 +212,15 @@ bool Peer::RemoteRetrieveImage(string stegName){
   return false;
 }
 
-int Peer::RemoteUpdateStegImage(string stegName){
+int Peer::RemoteUpdateStegImage(std::string stegName){
   int c = 0;
   if(IsStegImage(stegName)){
-    string str = StringAsString(stegName) + StegImage(stegName).AsString();
+    std::string str = StringAsString(stegName) + StegImage(stegName).AsString();
     Message* request = new Message(OperationType::UpdateImage, ToCharArray(str), str.size(), GetNextRPCID());
     if (RemoteUpdatePeerClients()){
       for (auto it=clients.begin(); it!=clients.end(); ++it){
         Message* reply = it->second->execute(request);
-        string replystr = FromCharArray((char*)reply->getMessage());
+        std::string replystr = FromCharArray((char*)reply->getMessage());
         if (GetBoolBetweenBracket(&replystr)){
           ++c;
         }

@@ -2,6 +2,9 @@
 #define VIEWIMAGEWINDOW_H
 
 #include <QDialog>
+#include <QPixmap>
+#include <map>
+#include <string>
 
 namespace Ui {
 class ViewImageWindow;

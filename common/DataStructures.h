@@ -1,23 +1,24 @@
-#include <string>
-#include "utilities.cpp"
-#include "Constants.cpp"
-#include "../stegn/decode.cpp"
-#include "../stegn/encode.cpp"
+#ifndef DataStructures_H
+#define DataStructures_H
 
-using namespace std;
+#include "utilities.h"
+
+#include <string>
+#include <map>
+#include <vector>
 
 struct AuthInfo{
-  string name;
-  string password;
+  std::string name;
+  std::string password;
 
 public:
-  string AsString(){
-    string str = "";
+  std::string AsString(){
+    std::string str = "";
     str = "\n{" + name + "}\n{" + password + "}";
     return str;
   }
 
-  void Initialize(string* str){
+  void Initialize(std::string* str){
     name = GetBetweenBrackets(str);
     password = GetBetweenBrackets(str);
   }
@@ -28,8 +29,8 @@ struct ConnectionInfo{
   int portNo;
 
   public:
-    string AsString(){
-    string str = "";
+    std::string AsString(){
+    std::string str = "";
     str = "\n{";
     str.append(userAddr);
     str = str + "}";
@@ -37,9 +38,9 @@ struct ConnectionInfo{
     return str;
   }
 
-  void Initialize(string* str){
+  void Initialize(std::string* str){
     //get char*
-    string addrstr = GetBetweenBrackets(str);
+    std::string addrstr = GetBetweenBrackets(str);
     userAddr = ToCharArray(addrstr);
     portNo = GetNumberBetweenBracket(str);
   }
@@ -50,13 +51,13 @@ struct UserInfo{
   ConnectionInfo connectionInfo;
   bool online;
 
-  string AsString(){
-    string str = authInfo.AsString() + connectionInfo.AsString();
+  std::string AsString(){
+    std::string str = authInfo.AsString() + connectionInfo.AsString();
     str = str + BoolAsString(online);
     return str;
   }
 
-  void Initialize(string* str){
+  void Initialize(std::string* str){
     authInfo.Initialize(str);
     connectionInfo.Initialize(str);
     online = GetBoolBetweenBracket(str);
@@ -68,37 +69,37 @@ struct UserInfo{
 // you lose the default picture
 // after multiple writes
 struct StegImageInfo{
-  string plainName;
-  string creator;
-  map<string, int> remainingViews;
-  string imageContent;
+  std::string plainName;
+  std::string creator;
+  std::map<std::string, int> remainingViews;
+  std::string imageContent;
 
-  string AsString(){
+  std::string AsString(){
     return StringAsString(plainName) + StringAsString(creator) + IntMapAsString(remainingViews) + StringAsString(imageContent);
   }
 
-  void Initialize(string* str){
+  void Initialize(std::string* str){
     plainName = GetBetweenBrackets(str);
     creator = GetBetweenBrackets(str);
     remainingViews = ParseIntMap(str);
     imageContent = GetBetweenBrackets(str);
   }
 
-  string GetHash(){
+  std::string GetHash(){
     return GetStringHash(StringAsString(plainName) + StringAsString(creator) + StringAsString(imageContent));
   }
 };
 
-string UserInfoVectorAsString(vector<UserInfo> v){
-  string str = "";
+static std::string UserInfoVectorAsString(std::vector<UserInfo> v){
+  std::string str = "";
   for (int i = 0; i < v.size(); ++i){
     str = str + v[i].AsString();
   }
   return str;
 }
 
-string ConnectionInfoMapAsString(map<string, ConnectionInfo> users){
-  string str = NumberAsString(users.size());
+static std::string ConnectionInfoMapAsString(std::map<std::string, ConnectionInfo> users){
+  std::string str = NumberAsString(users.size());
   for (auto it=users.begin(); it!=users.end(); ++it){
     str = str + StringAsString(it->first) + it->second.AsString();
   }
@@ -106,15 +107,16 @@ string ConnectionInfoMapAsString(map<string, ConnectionInfo> users){
 }
 
 
-map<string, ConnectionInfo> ParseConnectionInfoMap(string* str){
-  map<string, ConnectionInfo> users;
+static std::map<std::string, ConnectionInfo> ParseConnectionInfoMap(std::string* str){
+  std::map<std::string, ConnectionInfo> users;
   int n = GetNumberBetweenBracket(str);
   for(int i = 0; i < n; ++i){
-    string name = GetBetweenBrackets(str);
+    std::string name = GetBetweenBrackets(str);
     ConnectionInfo ci;
     ci.Initialize(str);
     users[name] = ci;
   }
-
   return users;
 }
+
+#endif

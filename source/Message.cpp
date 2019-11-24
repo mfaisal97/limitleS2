@@ -1,4 +1,6 @@
-Message::Message(OperationType _operation, void * p_message, size_t p_message_size, int p_rpc_id){
+#include "../header/Message.h"
+
+Message::Message(OperationType _operation, void * p_message, int p_message_size, int p_rpc_id){
   operation = _operation;
   message = p_message;
   message_size = p_message_size;
@@ -9,8 +11,8 @@ Message::Message(OperationType _operation, void * p_message, size_t p_message_si
 Message::Message(char * _marshalled_base64) : Message(FromCharArray(_marshalled_base64)){
 }
 
-Message::Message(string _marshalled_base64){
-  string str = _marshalled_base64;
+Message::Message(std::string _marshalled_base64){
+  std::string str = _marshalled_base64;
   message_type = (MessageType)GetNumberBetweenBracket(&str);
   operation = (OperationType)GetNumberBetweenBracket(&str);
   rpc_id = GetNumberBetweenBracket(&str);
@@ -22,8 +24,8 @@ char * Message::marshal (){
   return ToCharArray(marshalString());
 }
 
-string Message::marshalString (){
-  string str = "";
+std::string Message::marshalString (){
+  std::string str = "";
   str = str + NumberAsString(int(message_type));
   str = str + NumberAsString(int(operation));
   str = str + NumberAsString(int(rpc_id));
@@ -50,7 +52,7 @@ void * Message::getMessage(){
   return message;
 }
 
-size_t Message::getMessageSize(){
+int Message::getMessageSize(){
   return message_size;
 }
 
@@ -58,7 +60,7 @@ void Message::setOperation (OperationType _operation){
   operation = _operation;
 }
 
-void Message::setMessage (void * _message, size_t _message_size){
+void Message::setMessage (void * _message, int _message_size){
   message = _message;
   message_size = _message_size;
 }

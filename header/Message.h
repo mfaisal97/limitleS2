@@ -2,8 +2,8 @@
 #define MESSAGE_H
 
 #include <string>
-
-#define size_t int
+#include "../common/utilities.h"
+// #include "../common/common.h"
 
 enum MessageType { Request, Reply};
 enum OperationType {
@@ -18,27 +18,27 @@ class Message
         MessageType message_type;
         OperationType operation;
         void * message;
-        size_t message_size;
+        int message_size;
         int rpc_id;
     public:
-        Message(OperationType _operation, void * p_message, size_t p_message_size, int p_rpc_id);
+        Message(OperationType _operation, void * p_message, int p_message_size, int p_rpc_id);
         Message(char * _marshalled_base64);
-        Message(string _marshalled_base64);
+        Message(std::string _marshalled_base64);
 
         char * marshal ();
-        string marshalString ();
+        std::string marshalString ();
 
         OperationType getOperation ();
         int getRPCId();
         void * getMessage();
-        size_t getMessageSize();
+        int getMessageSize();
         MessageType getMessageType();
 
         void setOperation (OperationType _operation);
-        void setMessage (void * _message, size_t _message_size);
+        void setMessage (void * _message, int _message_size);
         void setMessageType (MessageType _message_type);
         ~Message();
 };
 
-#include "../source/Message.cpp"
+//#include "../source/Message.cpp"
 #endif // MESSAGE_H

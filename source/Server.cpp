@@ -1,4 +1,4 @@
-#include <arpa/inet.h>
+#include "../header/Server.h"
 
 Server::Server(char * _listen_hostname, int _listen_port){
   udpServerSocket = new UDPServerSocket(_listen_hostname, _listen_port);
@@ -30,11 +30,11 @@ void Server::sendReply (Message * _message){
 
 
 void Server::serveRequest(){
-  cout << "starting service\n";
+  std::cout << "starting service\n";
   int serverReceived = 0;
   while (true){
     Message* m = doOperation(getRequest());
-    cout << "Server got message: \t" <<(char*) m->getMessage() << "\n";
+    std::cout << "Server got message: \t" <<(char*) m->getMessage() << "\n";
     //child
     if(fork() == 0){
       sendReply(m);
@@ -45,7 +45,7 @@ void Server::serveRequest(){
       serverReceived++;
       char exitmessage[2]("q");
       if (strcmp( (char*) m->getMessage(), exitmessage ) == 0){
-        cout << "okay man I am done.\t"<< serverReceived <<endl;
+        std::cout << "okay man I am done.\t"<< serverReceived << std::endl;
         break;
       }
     }

@@ -3,22 +3,22 @@
 
 #include <map>
 #include <vector>
-
-#include "../header/Server.h"
+#include "Server.h"
+#include "../common/DataStructures.h"
 
 class ServiceDirectory : public Server
 {
     private:
-      std::map<string, UserInfo> Users;
+      std::map<std::string, UserInfo> Users;
     public:
         ServiceDirectory(int _listen_port);
 
         Message * doOperation(Message * message);
 
-        bool ValidUserName(string name);
+        bool ValidUserName(std::string name);
 
         //getters
-        bool IsUser(string name);
+        bool IsUser(std::string name);
         //bool IsAuthorized(string name);
 
         bool SignUp(UserInfo userInfo);
@@ -27,10 +27,10 @@ class ServiceDirectory : public Server
 
         bool UpdateConnectionInfo(UserInfo userInfo);
 
-        map<string, ConnectionInfo> GetOnlineUsers();
+        std::map<std::string, ConnectionInfo> GetOnlineUsers();
 
         ~ServiceDirectory();
 };
 
-#include "../source/ServiceDirectory.cpp"
+//#include "../source/ServiceDirectory.cpp"
 #endif // ServiceDirectory_H

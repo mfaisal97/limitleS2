@@ -1,43 +1,46 @@
 #ifndef StegImage_H
 #define StegImage_H
 
-#include "../common/DataStructures.cpp"
+#include "../common/common.h"
+#include <string>
+#include <vector>
+#include <map>
 
 class StegImage{
     private:
         StegImageInfo info;
     public:
-        StegImage(string plainName, string creator);
-        StegImage(string plainName, string creator, map<string, int> remainingViews);
+        StegImage(std::string plainName, std::string creator);
+        StegImage(std::string plainName, std::string creator, std::map<std::string, int> remainingViews);
         StegImage(StegImageInfo _info);
-        StegImage(string stegName);      //open already StegImage
+        StegImage(std::string stegName);      //open already StegImage
 
         //add some modifiers
-        bool addImage(string plainName);
-        bool addUser(string userName, int views);
-        bool increaseViews(string userName, int inc);
-        bool setCreator(string userName);
+        bool addImage(std::string plainName);
+        bool addUser(std::string userName, int views);
+        bool increaseViews(std::string userName, int inc);
+        bool setCreator(std::string userName);
 
         //getters
-        bool canIncreaseViews(string name, int inc);
-        bool hasViews(string name);
-        int getUserViews(string name);
-        string getCreator();
-        string getPlainName();
+        bool canIncreaseViews(std::string name, int inc);
+        bool hasViews(std::string name);
+        int getUserViews(std::string name);
+        std::string getCreator();
+        std::string getPlainName();
 
-        string AsString();
+        std::string AsString();
         char* AsCharArray();
 
         // helpers
         bool savePlainImage();
         bool removePlainImage();
         bool saveStegImage();
-        string GetHash(){
+        std::string GetHash(){
           return info.GetHash();
         }
 
         ~StegImage();
 };
 
-#include "../source/StegImage.cpp"
+//#include "../source/StegImage.cpp"
 #endif //StegImage_H

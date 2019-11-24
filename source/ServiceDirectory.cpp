@@ -1,9 +1,11 @@
+#include "../header/ServiceDirectory.h"
+
 ServiceDirectory::ServiceDirectory(int _listen_port) : Server(ToCharArray(""), _listen_port){
-  cout <<"Started Directory Service:\t\ton:\t" << _listen_port << "\n";
+  std::cout <<"Started Directory Service:\t\ton:\t" << _listen_port << "\n";
 }
 
 Message *  ServiceDirectory::doOperation(Message * message){
-  string messageContent = FromCharArray((char*) message->getMessage());
+  std::string messageContent = FromCharArray((char*) message->getMessage());
   message->setMessageType(MessageType::Reply);
   switch (message->getOperation()) {
     case OperationType::SignUp:{
@@ -53,18 +55,18 @@ Message *  ServiceDirectory::doOperation(Message * message){
 
     case OperationType::GetOnline:{
       // processing request
-      std::map<string, ConnectionInfo> u = GetOnlineUsers();
+      std::map<std::string, ConnectionInfo> u = GetOnlineUsers();
       // writing reply
       message->setMessage((void*)ToCharArray(ConnectionInfoMapAsString(u)), ConnectionInfoMapAsString(u).length());
       break;
     }
     default:
-      message->setMessage((void*)ToCharArray(string("{Unidentified Directory Service Request}")), string("{Unidentified Directory Service Request}").size());
+      message->setMessage((void*)ToCharArray(std::string("{Unidentified Directory Service Request}")), std::string("{Unidentified Directory Service Request}").size());
   }
   return message;
 }
 
-bool ServiceDirectory::ValidUserName(string name){
+bool ServiceDirectory::ValidUserName(std::string name){
   return (!IsUser(name)) && ValidUserNameString(name);
 }
 
@@ -73,13 +75,13 @@ bool ServiceDirectory::SignUp(UserInfo userInfo){
     return false;
   }
 
-  Users.insert(std::pair<string ,UserInfo>(userInfo.authInfo.name, userInfo));
+  Users.insert(std::pair<std::string ,UserInfo>(userInfo.authInfo.name, userInfo));
   return true;
 }
 
 
-bool ServiceDirectory::IsUser(string name){
-  map<string,UserInfo>::const_iterator it = Users.find(name);
+bool ServiceDirectory::IsUser(std::string name){
+  std::map<std::string,UserInfo>::const_iterator it = Users.find(name);
   return it!=Users.end();
 }
 
@@ -128,10 +130,10 @@ bool ServiceDirectory::SignOut(AuthInfo authInfo){
 }
 
 
-map<string, ConnectionInfo> ServiceDirectory::GetOnlineUsers(){
-  std::map<string, ConnectionInfo> onlineUsers;
+std::map<std::string, ConnectionInfo> ServiceDirectory::GetOnlineUsers(){
+  std::map<std::string, ConnectionInfo> onlineUsers;
 
-  for (std::map<string, UserInfo>::iterator it=Users.begin(); it!=Users.end(); ++it){
+  for (std::map<std::string, UserInfo>::iterator it=Users.begin(); it!=Users.end(); ++it){
     if(it->second.online){
       onlineUsers[it->first] = it->second.connectionInfo;
     }

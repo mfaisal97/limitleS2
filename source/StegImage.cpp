@@ -1,9 +1,11 @@
-StegImage::StegImage(string plainName, string creator){
+#include "../header/StegImage.h"
+
+StegImage::StegImage(std::string plainName, std::string creator){
     addImage(plainName);
     setCreator(creator);
 }
 
-StegImage::StegImage(string plainName, string creator, map<string, int> remainingViews):StegImage(plainName, creator){
+StegImage::StegImage(std::string plainName, std::string creator, std::map<std::string, int> remainingViews):StegImage(plainName, creator){
   info.remainingViews = remainingViews;
 }
 
@@ -14,19 +16,19 @@ StegImage::StegImage(StegImageInfo _info){
   info.imageContent = _info.imageContent;
 }
 
-StegImage::StegImage(string stegName){
-  string InfoString = Decode("", StegImagesDirectory + stegName, true);
+StegImage::StegImage(std::string stegName){
+  std::string InfoString = Decode("", StegImagesDirectory + stegName, true);
   info.Initialize(&InfoString);
 }
 
-bool StegImage::addImage(string plainName){
+bool StegImage::addImage(std::string plainName){
   info.plainName = plainName;
   info.imageContent = ReadImageBinaryAsString(PlainImagesDirectory + plainName);
 
   return true;
 }
 
-bool StegImage::addUser(string userName, int views){
+bool StegImage::addUser(std::string userName, int views){
   if(ValidUserNameString(userName)){
     info.remainingViews[userName] = views;
     return true;
@@ -35,7 +37,7 @@ bool StegImage::addUser(string userName, int views){
   return false;
 }
 
-bool StegImage::increaseViews(string userName, int inc){
+bool StegImage::increaseViews(std::string userName, int inc){
   if(canIncreaseViews(userName, inc)){
     info.remainingViews[userName] = info.remainingViews[userName] + inc;
     return true;
@@ -44,7 +46,7 @@ bool StegImage::increaseViews(string userName, int inc){
   return false;
 }
 
-bool StegImage::setCreator(string userName){
+bool StegImage::setCreator(std::string userName){
   if(ValidUserNameString(userName)){
     info.creator = userName;
     return true;
@@ -53,15 +55,15 @@ bool StegImage::setCreator(string userName){
 }
 
 
-bool StegImage::canIncreaseViews(string name, int inc){
+bool StegImage::canIncreaseViews(std::string name, int inc){
   return (getUserViews(name) >= 0) &&  (getUserViews(name) + inc >= 0);
 }
 
-bool StegImage::hasViews(string name){
+bool StegImage::hasViews(std::string name){
   return getUserViews(name) > 0;
 }
 
-int StegImage::getUserViews(string name){
+int StegImage::getUserViews(std::string name){
   auto it = info.remainingViews.find(name);
   if (it != info.remainingViews.end()){
     if (info.remainingViews[name] >= 0){
@@ -71,17 +73,17 @@ int StegImage::getUserViews(string name){
   return -1;
 }
 
-string StegImage::getCreator(){
+std::string StegImage::getCreator(){
   return info.creator;
 }
 
-string StegImage::getPlainName(){
+std::string StegImage::getPlainName(){
   return info.plainName;
 }
 
-string StegImage::AsString(){
-  string hash = info.GetHash();
-  string encoding = Encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
+std::string StegImage::AsString(){
+  std::string hash = info.GetHash();
+  std::string encoding = Encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
   return encoding;
 }
 
@@ -98,8 +100,8 @@ bool StegImage::removePlainImage(){
 }
 
 bool StegImage::saveStegImage(){
-  string hash = info.GetHash();
-  string encoding = Encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
+  std::string hash = info.GetHash();
+  std::string encoding = Encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
   return true;
 }
 
