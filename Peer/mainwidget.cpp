@@ -7,7 +7,7 @@ MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainWidget)
 {
-    peer = new Peer(PeerServerPort,ServiceDirectoryAddr,ServiceDirectoryPort);
+    peer = new Peer(PeerServerPort, ToCharArray(ServiceDirectoryAddr),ServiceDirectoryPort);
     ui->setupUi(this);
     Login l;
     l.setModal(true);

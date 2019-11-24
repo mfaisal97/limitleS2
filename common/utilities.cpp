@@ -17,6 +17,7 @@
 #include <dirent.h>
 #include <vector>
 #include <string.h>
+#include <iostream>
 #include <map>
 
 using namespace std;
