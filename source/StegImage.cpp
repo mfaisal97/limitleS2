@@ -1,8 +1,10 @@
 #include "../header/StegImage.h"
 
 StegImage::StegImage(std::string plainName, std::string creator){
+    std::cout<<"Entered Constructor\t"<<"Image Name: "<<plainName<<std::endl;
     addImage(plainName);
     setCreator(creator);
+    std::cout<<"Steg Image Created"<<std::endl;
 }
 
 StegImage::StegImage(std::string plainName, std::string creator, std::map<std::string, int> remainingViews):StegImage(plainName, creator){

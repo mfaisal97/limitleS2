@@ -81,6 +81,11 @@ static int GetNumberBetweenBracket(std::string* str){
 
 static bool GetBoolBetweenBracket(std::string* str){
   std::string numStr = GetBetweenBrackets(str);
+  if(numStr=="1"){
+    std::cout<<"\n Sign in:\t"<<"Succeeded"<<'\n';}
+  else{
+    std::cout<<"\n Sign up:\t"<<"Failed"<<'\n';
+  }
   return stoi(numStr);
 }
 static std::string StringAsString(std::string str){

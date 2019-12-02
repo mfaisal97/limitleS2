@@ -6,6 +6,7 @@ AddImageWindow::AddImageWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddImageWindow)
 {
+
     ui->setupUi(this);
 }
 
@@ -17,6 +18,8 @@ AddImageWindow::~AddImageWindow()
 
 void AddImageWindow::on_pushButton_2_clicked()
 {
+
+    QString imagePath=ui->lineEdit->text();
     QTableWidgetItem *userItem = new QTableWidgetItem();
     QTableWidgetItem *viewsItem = new QTableWidgetItem();
 
@@ -32,4 +35,14 @@ void AddImageWindow::on_pushButton_2_clicked()
     ui->tableWidget->setItem(insertRow,0,userItem);
     ui->tableWidget->setItem(userItem->row(),1,viewsItem);
 
+}
+
+void AddImageWindow::on_pushButton_clicked()
+{
+    QString imagePath=ui->lineEdit->text();
+    std::cout<<"Image path in QT "<<imagePath.toUtf8().constData()<<std::endl;
+    std::string im = peer->GetUserName();
+    std::cout << "test: " << im << std::endl;
+    StegImage* imageToBeAdded = new StegImage(imagePath.toUtf8().constData(),peer->GetUserName());
+    imageToBeAdded->saveStegImage();
 }

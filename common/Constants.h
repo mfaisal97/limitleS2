@@ -12,6 +12,6 @@ const int MAX_MESSAGE_SIZE = 1024;
 //config
 static int PeerServerPort = 4051;
 static int ServiceDirectoryPort = 4050;
-static std::string ServiceDirectoryAddr = "10.40.57.172";
+static std::string ServiceDirectoryAddr = "10.40.52.90";
 
 #endif

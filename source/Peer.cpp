@@ -78,6 +78,7 @@ std::string Peer:: GetAuthInfo(){
   return userInfo.authInfo.password+"  "+userInfo.authInfo.name;
 }
 
+
 bool Peer::SetUserName(std::string userName){
   if (ValidUserNameString(userName)){
     userInfo.authInfo.name = userName;
@@ -154,6 +155,12 @@ bool Peer::IsAuthorizedUpdate(std::string stegImageName, std::string stegImageCo
 }
 
 std::string Peer::GetUserName(){
+  if(userInfo.authInfo.name!=""){
+    std::cout<<"User Info.name in get user name "<<userInfo.authInfo.name<<std::endl;
+  }
+  else{
+    std::cout<<"User Info.name in get user name is empty"<<std::endl;
+  }
   return userInfo.authInfo.name;
 }
 

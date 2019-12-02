@@ -23,6 +23,7 @@ MainWidget::~MainWidget()
 void MainWidget::on_AddImageButton_clicked()
 {
     a = new AddImageWindow(this);
+    a->setPeer(peer);
     //a->setPeer(peer);
     a->show();
 

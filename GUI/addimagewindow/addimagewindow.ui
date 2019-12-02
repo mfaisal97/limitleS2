@@ -46,7 +46,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Do Operation</string>
+    <string>Save Image</string>
    </property>
   </widget>
   <widget class="QTableWidget" name="tableWidget">
