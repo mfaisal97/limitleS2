@@ -6,6 +6,7 @@ MainWidget::MainWidget(QWidget *parent,Peer* _peer)
     : QWidget(parent)
     , ui(new Ui::MainWidget)
 {
+    setPeer(_peer);
     ui->setupUi(this);
     Login l;
     l.setPeer(_peer);
@@ -22,6 +23,7 @@ MainWidget::~MainWidget()
 
 void MainWidget::on_AddImageButton_clicked()
 {
+    
     a = new AddImageWindow(this);
     a->setPeer(peer);
     //a->setPeer(peer);
