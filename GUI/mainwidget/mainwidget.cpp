@@ -7,8 +7,8 @@ MainWidget::MainWidget(QWidget *parent)
     , ui(new Ui::MainWidget)
 {
     ui->setupUi(this);
-    Login l(peer);
-    l.setPeer(peer);
+    Login l;
+    //l.setPeer(peer);
     l.setModal(true);
     l.exec();
 
@@ -23,7 +23,7 @@ MainWidget::~MainWidget()
 void MainWidget::on_AddImageButton_clicked()
 {
     a = new AddImageWindow(this);
-    a->setPeer(peer);
+    //a->setPeer(peer);
     a->show();
 
 }
@@ -31,6 +31,6 @@ void MainWidget::on_AddImageButton_clicked()
 void MainWidget::on_ViewImageButton_clicked()
 {
     v= new ViewImageWindow(this);
-    v->setPeer(peer);
+    //v->setPeer(peer);
     v->show();
 }
