@@ -15,7 +15,7 @@ class Login : public QDialog
 public:
     explicit Login(QWidget *parent = nullptr);
     void setPeer(Peer* _peer){
-        std::cout << "Peer passed!";
+        //std::cout << "Peer passed!";
         peer = _peer;
     }
     ~Login();
@@ -23,7 +23,7 @@ public:
 private slots:
     void on_pushButton_clicked();
 
-    void on_pushButton_clicked(bool checked);
+    void on_pushButton_2_clicked();
 
 private:
     Peer* peer;

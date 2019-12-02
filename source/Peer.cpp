@@ -70,7 +70,7 @@ bool Peer::UpdateClient(std::string userName, ConnectionInfo connectionInfo){
 }
 
 bool Peer::SetAuthInfo(std::string userName, std::string password){
-  std::cout<<"In peercpp checking parameters"<<userName<<"  "<<password;
+  //std::cout<<"In peercpp checking parameters"<<userName<<"  "<<password;
   return SetUserName(userName) && SetPassword(password);
 }
 
@@ -164,7 +164,7 @@ bool Peer::RemoteSignUp(){
   Message* request = new Message(OperationType::SignUp, (void*)requestStrChar, requeststr.size(), GetNextRPCID());
   DebugHere(request, request);
   Message* reply = serviceDirectory.execute(request);
-  DebugHere(request, request);
+  DebugHere(request, reply);
   std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
   std::cout <<"finished signing up\n";
