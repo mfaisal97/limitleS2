@@ -2,13 +2,13 @@
 #include "ui_mainwidget.h"
 
 
-MainWidget::MainWidget(QWidget *parent)
+MainWidget::MainWidget(QWidget *parent,Peer* _peer)
     : QWidget(parent)
     , ui(new Ui::MainWidget)
 {
     ui->setupUi(this);
     Login l;
-    //l.setPeer(peer);
+    l.setPeer(_peer);
     l.setModal(true);
     l.exec();
 

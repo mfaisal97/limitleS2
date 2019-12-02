@@ -27,6 +27,7 @@ class Peer : Server{
     bool UpdateClient(std::string userName, ConnectionInfo connectionInfo);
 
     bool SetAuthInfo(std::string userName, std::string password);
+    std:: string GetAuthInfo();
     bool SetUserName(std::string userName);
     bool SetPassword(std::string password);
 

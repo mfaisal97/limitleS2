@@ -16,7 +16,7 @@ class MainWidget : public QWidget
     Q_OBJECT
 
 public:
-    MainWidget(QWidget *parent = nullptr);
+    MainWidget(QWidget *parent = nullptr,Peer* _peer=nullptr);
     void setPeer(Peer* _peer){
         peer = _peer;
     }
@@ -31,6 +31,6 @@ private:
     Peer *peer;
     Ui::MainWidget *ui;
     AddImageWindow *a;
-    ViewImageWindow *v;
+    ViewImageWindow *v; 
 };
 #endif // MAINWIDGET_H

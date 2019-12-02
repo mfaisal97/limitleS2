@@ -5,9 +5,9 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     Peer* peer = new Peer(PeerServerPort, ToCharArray(ServiceDirectoryAddr),ServiceDirectoryPort);
-    cout << "userInfo:  " << peer->getUserInfo();
+    //cout << "userInfo:  " << peer->getUserInfo();
     QApplication a(argc, argv);
-    MainWidget w;
+    MainWidget w(nullptr,peer);
     //w.setPeer(peer);
     w.show();
     return a.exec();

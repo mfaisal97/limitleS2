@@ -70,7 +70,12 @@ bool Peer::UpdateClient(std::string userName, ConnectionInfo connectionInfo){
 }
 
 bool Peer::SetAuthInfo(std::string userName, std::string password){
+  std::cout<<"In peercpp checking parameters"<<userName<<"  "<<password;
   return SetUserName(userName) && SetPassword(password);
+}
+
+std::string Peer:: GetAuthInfo(){
+  return userInfo.authInfo.password+"  "+userInfo.authInfo.name;
 }
 
 bool Peer::SetUserName(std::string userName){
