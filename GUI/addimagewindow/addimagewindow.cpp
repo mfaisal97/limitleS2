@@ -40,11 +40,20 @@ void AddImageWindow::on_pushButton_2_clicked()
 void AddImageWindow::on_pushButton_clicked()
 {
     QString imagePath=ui->lineEdit->text();
-    std::cout<<"Image path in QT "<<imagePath.toUtf8().constData()<<std::endl;
+    //std::cout<<"Image path in QT "<<imagePath.toUtf8().constData()<<std::endl;
     //std::string im = peer->GetUserName();
     //std::cout << "test: " << im << std::endl;
-    StegImage* imageToBeAdded = new StegImage(imagePath.toUtf8().constData(),peer->GetUserName());
-    for(int i=0;i>){
-        imageToBeAdded->saveStegImage();
+    imageToBeAdded = new StegImage(imagePath.toUtf8().constData(),peer->GetUserName());
+    for(int i=0;i<pickedUsers.size();i++){
+        if(imageToBeAdded->addUser(pickedUsers[i][0],stoi(pickedUsers[i][1]))){
+            std::cout<<"Added user "<<pickedUsers[i][0]<<" Successfully"<<std::endl;
+        }
+        else{
+            std::cout<<"Adding user "<<pickedUsers[i][0]<<"failed"<<std::endl;
+        }
     }
+    imageToBeAdded->saveStegImage();
+    peer->
+    close();
 }
+

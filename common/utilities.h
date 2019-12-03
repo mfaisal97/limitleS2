@@ -348,9 +348,9 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 		std::cout << "Message too big. Try with larger image.\n";
 		exit(-1);
 	}
-  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-  cv::imshow("image", image);
-  cv::waitKey(30);
+  //cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+  //cv::imshow("image", image);
+  //cv::waitKey(30);
 	cv::imwrite(outImageFullPath,image);
 
 	//fake reading the image
