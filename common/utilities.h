@@ -32,6 +32,308 @@
 #include <opencv2/highgui/highgui.hpp>
 
 
+static bool isBitSet(char ch, int pos);
+static std::string encode(std::string message, std::string output_path, std::string input_path);
+static std::string base64Decode(const char* Data, int DataByte);
+static std::string base64Encode(const unsigned char* Data, int DataByte);
+static std::string Mat2Base64(const cv::Mat &img, std::string imgType);
+static cv::Mat Base2Mat(std::string &base64_data);
+static std::string decode(std::string steg_base64);
+
+
+static bool isBitSet(char ch, int pos) {
+	ch = ch >> pos;
+	if(ch & 1)
+		return true;
+	return false;
+}
+
+static std::string encode(std::string message, std::string output_path, std::string input_path = defaultImagePath){
+    std::string file_path = "message.txt";
+    std::string output_file = output_path;
+    std::string image_path = input_path;
+
+    //store message in text file
+    std::ofstream out(file_path);
+    out << message;
+    out.close();
+
+	// Stores original image
+	cv::Mat image = cv::imread(image_path);
+	if(image.empty()) {
+		std::cout << "Image Error\n";
+		exit(-1);
+	}
+
+	// Open file for text information
+	std::ifstream file(file_path);
+	if(!file.is_open()) {
+		std::cout << "File Error\n";
+		exit(-1);
+	}
+
+	// char to work on
+	char ch;
+	// reads the first char from the file
+	file.get(ch);
+	// contains information about which bit of char to work on
+	int bit_count = 0;
+	// to check whether file has ended
+	bool last_null_char = false;
+	// to check if the whole message is encoded or not
+	bool encoded = false;
+
+	/*
+	To hide text into images. We are taking one char (8 bits) and each of the 8 bits are stored
+	in the Least Significant Bits (LSB) of the pixel values (Red,Green,Blue).
+	We are manipulating bits in such way that changing LSB of the pixel values will not make a huge difference.
+	The image will still look similiar to the naked eye.
+	*/
+
+	for(int row=0; row < image.rows; row++) {
+		for(int col=0; col < image.cols; col++) {
+			for(int color=0; color < 3; color++) {
+				// stores the pixel details
+
+				cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(row,col));
+
+				// if bit is 1 : change LSB of present color value to 1.
+				// if bit is 0 : change LSB of present color value to 0.
+
+				if(isBitSet(ch,7-bit_count))
+					pixel.val[color] |= 1;
+				else
+					pixel.val[color] &= ~1;
+
+				// update the image with the changed pixel values
+				image.at<cv::Vec3b>(cv::Point(row,col)) = pixel;
+
+				// increment bit_count to work on next bit
+				bit_count++;
+
+
+				// if last_null_char is true and bit_count is 8, then our message is successfully encode.
+				if(last_null_char && bit_count == 8) {
+					encoded  = true;
+					goto OUT;
+				}
+
+
+				// if bit_count is 8 we pick the next char from the file and work on it
+
+
+                if(bit_count == 8) {
+					bit_count = 0;
+					file.get(ch);
+
+
+					// if EndOfFile(EOF) is encountered insert NULL char to the image
+					if(file.eof()) {
+						last_null_char = true;
+						ch = '\0';
+					}
+
+				}
+
+			}
+		}
+	}
+	OUT:;
+
+	// whole message was not encoded
+	if(!encoded) {
+		std::cout << "Message too big. Try with larger image.\n";
+		exit(-1);
+	}
+
+	// Writes the stegnographic image
+	cv::imwrite(output_file, image);
+    return Mat2Base64(image, "png");
+
+}
+
+static std::string base64Decode(const char* Data, int DataByte)
+{
+	// Decoding table
+	const char DecodeTable[] =
+	{
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		62, // '+'
+		0, 0, 0,
+		63, // '/'
+		52, 53, 54, 55, 56, 57, 58, 59, 60, 61, // '0'-'9'
+		0, 0, 0, 0, 0, 0, 0,
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+		13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, // 'A'-'Z'
+		0, 0, 0, 0, 0, 0,
+		26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+		39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, // 'a'-'z'
+	};
+	 	//return value
+	std::string strDecode;
+	int nValue;
+	int i = 0;
+	while (i < DataByte)
+	{
+		if (*Data != '\r' && *Data != '\n')
+		{
+			nValue = DecodeTable[*Data++] << 18;
+			nValue += DecodeTable[*Data++] << 12;
+			strDecode += (nValue & 0x00FF0000) >> 16;
+			if (*Data != '=')
+			{
+				nValue += DecodeTable[*Data++] << 6;
+				strDecode += (nValue & 0x0000FF00) >> 8;
+				if (*Data != '=')
+				{
+					nValue += DecodeTable[*Data++];
+					strDecode += nValue & 0x000000FF;
+				}
+			}
+			i += 4;
+		}
+		 else// carriage return, skip
+		{
+			Data++;
+			i++;
+		}
+	}
+	return strDecode;
+}
+
+
+static std::string base64Encode(const unsigned char* Data, int DataByte)
+{
+	 // code table
+	const char EncodeTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	 	//return value
+	std::string strEncode;
+	unsigned char Tmp[4] = { 0 };
+	int LineLength = 0;
+	for (int i = 0; i < (int)(DataByte / 3); i++)
+	{
+		Tmp[1] = *Data++;
+		Tmp[2] = *Data++;
+		Tmp[3] = *Data++;
+		strEncode += EncodeTable[Tmp[1] >> 2];
+		strEncode += EncodeTable[((Tmp[1] << 4) | (Tmp[2] >> 4)) & 0x3F];
+		strEncode += EncodeTable[((Tmp[2] << 2) | (Tmp[3] >> 6)) & 0x3F];
+		strEncode += EncodeTable[Tmp[3] & 0x3F];
+		if (LineLength += 4, LineLength == 76) { strEncode += "\r\n"; LineLength = 0; }
+	}
+	 // Encode the remaining data
+	int Mod = DataByte % 3;
+	if (Mod == 1)
+	{
+		Tmp[1] = *Data++;
+		strEncode += EncodeTable[(Tmp[1] & 0xFC) >> 2];
+		strEncode += EncodeTable[((Tmp[1] & 0x03) << 4)];
+		strEncode += "==";
+	}
+	else if (Mod == 2)
+	{
+		Tmp[1] = *Data++;
+		Tmp[2] = *Data++;
+		strEncode += EncodeTable[(Tmp[1] & 0xFC) >> 2];
+		strEncode += EncodeTable[((Tmp[1] & 0x03) << 4) | ((Tmp[2] & 0xF0) >> 4)];
+		strEncode += EncodeTable[((Tmp[2] & 0x0F) << 2)];
+		strEncode += "=";
+	}
+
+
+	return strEncode;
+}
+
+
+static std::string Mat2Base64(const cv::Mat &img, std::string imgType)
+{
+	 //Mat to base64
+	std::string img_data;
+	std::vector<uchar> vecImg;
+	std::vector<int> vecCompression_params;
+	vecCompression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
+	vecCompression_params.push_back(90);
+	imgType = "." + imgType;
+	cv::imencode(imgType, img, vecImg, vecCompression_params);
+	img_data = base64Encode(vecImg.data(), vecImg.size());
+	return img_data;
+}
+
+
+static cv::Mat Base2Mat(std::string &base64_data)
+{
+	cv::Mat img;
+	std::string s_mat;
+	s_mat = base64Decode(base64_data.data(), base64_data.size());
+	std::vector<char> base64_img(s_mat.begin(), s_mat.end());
+	img = cv::imdecode(base64_img, CV_LOAD_IMAGE_COLOR);
+	return img;
+}
+
+
+
+static std::string decode(std::string steg_base64) {
+    cv::Mat image = Base2Mat(steg_base64);
+	// Stores original image
+	// cv::Mat image = cv::imread("output.png");
+	// if(image.empty()) {
+	// 	std::cout << "Image Error\n";
+	// 	exit(-1);
+	// }
+
+	// char to work on
+	char ch=0;
+	// contains information about which bit of char to work on
+	int bit_count = 0;
+	std::string rt = "";
+
+	/*
+	To extract the message from the image, we will iterate through the pixels and extract the LSB of
+	the pixel values (RGB) and this way we can get our message.
+	*/
+	for(int row=0; row < image.rows; row++) {
+		for(int col=0; col < image.cols; col++) {
+			for(int color=0; color < 3; color++) {
+
+				// stores the pixel details
+				cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(row,col));
+
+				// manipulate char bits according to the LSB of pixel values
+				if(isBitSet(pixel.val[color],0))
+					ch |= 1;
+
+				// increment bit_count to work on next bit
+				bit_count++;
+
+				// bit_count is 8, that means we got our char from the encoded image
+				if(bit_count == 8) {
+
+					// NULL char is encountered
+					if(ch == '\0')
+						goto OUT;
+
+					bit_count = 0;
+					rt = rt + " ";
+					rt[rt.size() - 1] = ch;
+					ch = 0;
+				}
+				else {
+					ch = ch << 1;
+				}
+
+			}
+		}
+	}
+	OUT:;
+
+
+    return "0";
+}
+
+
+
+
 static void setBroadcast(int s){
     int arg;
     #ifdef SO_BROADCAST
@@ -273,41 +575,55 @@ static std::string base64_decode(std::string const& encoded_string) {
   return ret;
 }
 
-static bool WriteImageBinaryAsString(std::string imageFullPath, std::string content){
-  content = base64_decode(content);
-  std::ofstream wf(imageFullPath, std::ios::out | std::ios::binary);
-	if(!wf) {
-		std::cout << "Cannot open Fake \"" + imageFullPath + "\" for writing" << std::endl;
-		return false;
-	}
-	wf.write((char *) &content, sizeof(content));
-	wf.close();
+static bool WriteImageBinaryAsString(std::string directoryPath, std::string imageName, std::string ext, std::string content){
+		cv::Mat image = Base2Mat(content);
+		cv::imwrite(directoryPath + "/" + imageName + "." + ext, image);
+
+  // content = base64_decode(content);
+  // std::ofstream wf(imageFullPath, std::ios::out | std::ios::binary);
+	// if(!wf) {
+	// 	std::cout << "Cannot open Fake \"" + imageFullPath + "\" for writing" << std::endl;
+	// 	return false;
+	// }
+	// wf.write((char *) &content, sizeof(content));
+	// wf.close();
   return true;
 }
 
-static std::string ReadImageBinaryAsString(std::string imageFullPath){
-  std::string content = "";
-  std::ifstream rf(imageFullPath, std::ios::binary);
-  if (rf){
+static std::string ReadImageBinaryAsString(std::string directoryPath, std::string imageName, std::string ext){
+	//
+  // std::string content = "";
+  // std::ifstream rf(imageFullPath, std::ios::binary);
+  // if (rf){
+	//
+  //   std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(rf), {});
+	//
+  //   // // get length of file:
+  //   // rf.seekg (0, rf.end);
+  //   // int length = rf.tellg();
+  //   // rf.seekg (0, rf.beg);
+  //   //
+  //   // char * buffer = new char [length];
+  //   // rf.read (buffer,length);
+  //   content = FromCharArray(buffer);
+  //   //std::cout << "buffer is\t" << buffer<<std::endl;
+  //   // std::cout << "content is\t" << content<<std::endl;
+	//
+  //   rf.close();
+  // }else {
+  //   std::cout << "Cannot open \"" + imageFullPath + "\" for reading" << std::endl;
+  // }
+  // return base64_encode((unsigned char*)ToCharArray(content), content.size());
 
-    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(rf), {});
+	cv::Mat image = cv::imread(directoryPath + "/" + imageName + "." + ext);
+	if (image.empty()){
 
-    // // get length of file:
-    // rf.seekg (0, rf.end);
-    // int length = rf.tellg();
-    // rf.seekg (0, rf.beg);
-    //
-    // char * buffer = new char [length];
-    // rf.read (buffer,length);
-    content = FromCharArray(buffer);
-    //std::cout << "buffer is\t" << buffer<<std::endl;
-    // std::cout << "content is\t" << content<<std::endl;
+		std::cout << "Image Error: \t"  +directoryPath + "/" + imageName + "." + ext + "\n" ;
+		exit(-1);
+	}
 
-    rf.close();
-  }else {
-    std::cout << "Cannot open \"" + imageFullPath + "\" for reading" << std::endl;
-  }
-  return base64_encode((unsigned char*)ToCharArray(content), content.size());
+	std::string stegImageStr = Mat2Base64(image, "jpeg");
+	return stegImageStr;
 }
 
 static std::string GetStringHash(std::string str){
@@ -337,165 +653,5 @@ static std::vector<std::string> ListFiles( const char* path){
   }
   return files;
 }
-
-static bool isBitSet(char ch, int pos) {
-	ch = ch >> pos;
-	if(ch & 1)
-		return true;
-	return false;
-}
-
-// takes the content of the image file and returns the hidden message
-static std::string Decode(std::string content, std::string inImage = ".jpeg", bool alreadyExisting = true){
-	std::string inImageFullPath = inImage;
-
-	//fake writing the image
-	if(!alreadyExisting){
-		WriteImageBinaryAsString(inImageFullPath, content);
-	}
-
-	std::string str = "";
-	cv::Mat image = cv::imread(inImageFullPath);
-	if(image.empty()) {
-		std::cout << "Image Error\n";
-		exit(-1);
-	}
-
-  // std::cout<< image <<std::endl;
-
-	char ch=0;
-	int bit_count = 0;
-
-	for(int row=0; row < image.rows; row++) {
-		for(int col=0; col < image.cols; col++) {
-			for(int color=0; color < 3; color++) {
-
-				cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(row,col));
-
-				if(isBitSet(pixel.val[color],0))
-					ch |= 1;
-
-				bit_count++;
-
-				if(bit_count == 8) {
-          std::cout << "man do something \n";
-
-					if(ch == '\0')
-						goto OUT;
-
-					bit_count = 0;
-          char c = ch;
-          std::string nstr=" ";
-          nstr[0] = ch;
-          str = str + nstr;
-					// str.append(" ");
-					ch = 0;
-				}
-				else {
-					ch = ch << 1;
-				}
-
-			}
-		}
-	}
-	OUT:;
-
-  std::cout << "\n\n\n"<< str.size() <<"\n\n\nthis text decode\n\n\n\n\n\n" << std::endl;
-  std::cout << "this text\t" << str << std::endl;
-
-	return str;
-}
-
-//returns the content of the resulting image
-static std::string Encode(std::string text, std::string outImageName, std::string inImageName = DefaultImagePath){
-  std::cout << "\n\n\n"<< text.size() <<"\n\n\nthis text encode\n\n\n\n\n\n" << std::endl;
-  std::cout << "this text\t" << text << std::endl;
-  text = text +"\0";
-	std::string content = "";
-	std::string outImageFullPath = outImageName;
-
-	// text = text + "\0";
-	cv::Mat image = cv::imread(inImageName);
-	if(image.empty()) {
-		std::cout << "Image Error\n";
-		exit(-1);
-	}
-
-	// char to work on
-	int ind = 0;
-	char ch;
-	// reads the first char from the file
-    ch = text[ind++];
-	// contains information about which bit of char to work on
-	int bit_count = 0;
-	// to check whether file has ended
-	bool last_null_char = false;
-	// to check if the whole message is encoded or not
-	bool encoded = false;
-
-	for(int row=0; row < image.rows; row++) {
-		for(int col=0; col < image.cols; col++) {
-			for(int color=0; color < 3; color++) {
-        // std::cout << ind << std::endl;
-
-				cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(row,col));
-
-				if(isBitSet(ch,7-bit_count))
-					pixel.val[color] |= 1;
-				else
-					pixel.val[color] &= ~1;
-
-				image.at<cv::Vec3b>(cv::Point(row,col)) = pixel;
-
-				bit_count++;
-
-				if(last_null_char && bit_count == 8) {
-					encoded  = true;
-					goto OUT;
-				}
-
-				if(bit_count == 8) {
-					bit_count = 0;
-
-          if(text[ind] != '\0'){
-              ch = text[ind++];
-          }
-
-					if(ind >= text.size()-1) {
-						last_null_char = true;
-            ch = '\0';
-					}
-				}
-
-        ind++;
-			}
-		}
-	}
-	OUT:;
-  // std::cout << "finished encoding" <<std::endl;
-
-	//future bug project :D
-	// whole message was not encoded
-	if(!encoded) {
-		std::cout << "Message too big. Try with larger image.\n";
-		exit(-1);
-	}
-  //cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-  //cv::imshow("image", image);
-  //cv::waitKey(30);
-  // std::cout<< image <<std::endl;
-	cv::imwrite(outImageFullPath,image);
-
-	//fake reading the image
-	content = ReadImageBinaryAsString(outImageFullPath);
-
-  // std::cout << "\n\n\n"<< content.size() <<"\n\n\nthis content encode\n\n\n\n\n\n" << std::endl;
-  // std::cout << "content text\t" << content << std::endl;
-
-
-
-	return content;
-}
-
 
 #endif

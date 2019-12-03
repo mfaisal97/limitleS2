@@ -118,7 +118,7 @@ std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName
 
 bool Peer::UpdateStegImage(std::string stegImageName, std::string stegImageContent){
   if(IsAuthorizedUpdate(stegImageName, stegImageContent)){
-    return WriteImageBinaryAsString(StegImagesDirectory + stegImageName + ".jpeg", stegImageContent);
+    return WriteImageBinaryAsString(StegImagesDirectory, stegImageName, "jpeg", stegImageContent);
   }
   return false;
 }
@@ -232,7 +232,7 @@ bool Peer::RemoteRetrieveImage(std::string stegName){
       Message* reply = it->second->execute(request);
       std::string replystr = FromCharArray((char*)reply->getMessage());
       if(replystr.size()>0){
-        bool done = WriteImageBinaryAsString(StegImagesDirectory + stegName + ".jpeg", replystr);
+        bool done = WriteImageBinaryAsString(StegImagesDirectory, stegName, "jpeg", replystr);
         if (done){
           return true;
         }

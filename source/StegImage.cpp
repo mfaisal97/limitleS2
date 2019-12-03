@@ -19,15 +19,15 @@ StegImage::StegImage(StegImageInfo _info){
 }
 
 StegImage::StegImage(std::string stegName){
-  std::string InfoString = Decode("", StegImagesDirectory + stegName + ".jpeg", true);
+  std::string InfoString = decode(ReadImageBinaryAsString(StegImagesDirectory, stegName, "jpeg"));
   // std::cout << InfoString << std::endl;
   info.Initialize(&InfoString);
 }
 
 bool StegImage::addImage(std::string plainName){
   info.plainName = plainName;
-  info.imageContent = ReadImageBinaryAsString(PlainImagesDirectory + plainName);
-
+  int extInd = plainName.find('.');
+  info.imageContent = ReadImageBinaryAsString(PlainImagesDirectory, plainName.substr(0, extInd), plainName.substr(extInd + 1));
   return true;
 }
 
@@ -86,7 +86,7 @@ std::string StegImage::getPlainName(){
 
 std::string StegImage::AsString(){
   std::string hash = info.GetHash();
-  std::string encoding = Encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
+  std::string encoding = encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
   return encoding;
 }
 
@@ -95,7 +95,8 @@ char* StegImage::AsCharArray(){
 }
 
 bool StegImage::savePlainImage(){
-  return WriteImageBinaryAsString(PlainImagesDirectory + info.plainName, info.imageContent);
+  int extInd =  info.plainName.find('.');
+  return WriteImageBinaryAsString(PlainImagesDirectory,  info.plainName.substr(0, extInd),  info.plainName.substr(extInd + 1), info.imageContent);
 }
 
 bool StegImage::removePlainImage(){
@@ -105,7 +106,7 @@ bool StegImage::removePlainImage(){
 bool StegImage::saveStegImage(){
   std::string hash = info.GetHash();
   std::string infoStr = info.AsString();
-  std::string encoding = Encode(infoStr, StegImagesDirectory + hash + ".jpeg");
+  std::string encoding = encode(infoStr, StegImagesDirectory + hash + ".jpeg");
   return true;
 }
 
