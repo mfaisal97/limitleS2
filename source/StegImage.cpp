@@ -20,13 +20,13 @@ StegImage::StegImage(StegImageInfo _info){
 
 StegImage::StegImage(std::string stegName){
   std::string InfoString = Decode("", StegImagesDirectory + stegName + ".jpeg", true);
+  // std::cout << InfoString << std::endl;
   info.Initialize(&InfoString);
 }
 
 bool StegImage::addImage(std::string plainName){
   info.plainName = plainName;
   info.imageContent = ReadImageBinaryAsString(PlainImagesDirectory + plainName);
-  std::cout << "but image content\t" << info.imageContent << std::endl;
 
   return true;
 }
@@ -105,8 +105,6 @@ bool StegImage::removePlainImage(){
 bool StegImage::saveStegImage(){
   std::string hash = info.GetHash();
   std::string infoStr = info.AsString();
-  std::cout << "trying to save infoStr\t" << infoStr << std::endl;
-  std::cout << "but image content\t" << info.imageContent << std::endl;
   std::string encoding = Encode(infoStr, StegImagesDirectory + hash + ".jpeg");
   return true;
 }

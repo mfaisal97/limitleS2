@@ -262,12 +262,14 @@ static std::string Decode(std::string content, std::string inImage = ".jpeg", bo
 		WriteImageBinaryAsString(inImageFullPath, content);
 	}
 
-	std::string str;
+	std::string str = "";
 	cv::Mat image = cv::imread(inImageFullPath);
 	if(image.empty()) {
 		std::cout << "Image Error\n";
 		exit(-1);
 	}
+
+  std::cout<< image <<std::endl;
 
 	char ch=0;
 	int bit_count = 0;
@@ -284,12 +286,16 @@ static std::string Decode(std::string content, std::string inImage = ".jpeg", bo
 				bit_count++;
 
 				if(bit_count == 8) {
+          std::cout << "man do something \n";
 
 					if(ch == '\0')
 						goto OUT;
 
 					bit_count = 0;
-					str.append(&ch);
+          char c = ch;
+          // string nstr=" ";
+          // nstr[0] = ch
+					str.append(" ");
 					ch = 0;
 				}
 				else {

@@ -243,9 +243,11 @@ bool Peer::RemoteRetrieveImage(std::string stegName){
 }
 
 int Peer::RemoteUpdateStegImage(std::string stegName){
+
   int c = 0;
   if(IsStegImage(stegName)){
     std::string str = StringAsString(stegName) + StegImage(stegName).AsString();
+    std::cout << "okay man calm down :D\t " << "str" << std::endl;
     Message* request = new Message(OperationType::UpdateImage, ToCharArray(str), str.size(), GetNextRPCID());
     if (RemoteUpdatePeerClients()){
       for (auto it=clients.begin(); it!=clients.end(); ++it){
