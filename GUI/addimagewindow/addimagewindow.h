@@ -32,6 +32,7 @@ private:
     Peer* peer;
     Ui::AddImageWindow *ui;
     std::vector<std::vector<std::string>> pickedUsers;
+    StegImage* imageToBeAdded;
 };
 
 #endif // ADDIMAGEWINDOW_H

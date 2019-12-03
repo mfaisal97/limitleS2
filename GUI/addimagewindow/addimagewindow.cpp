@@ -41,8 +41,10 @@ void AddImageWindow::on_pushButton_clicked()
 {
     QString imagePath=ui->lineEdit->text();
     std::cout<<"Image path in QT "<<imagePath.toUtf8().constData()<<std::endl;
-    std::string im = peer->GetUserName();
-    std::cout << "test: " << im << std::endl;
+    //std::string im = peer->GetUserName();
+    //std::cout << "test: " << im << std::endl;
     StegImage* imageToBeAdded = new StegImage(imagePath.toUtf8().constData(),peer->GetUserName());
-    imageToBeAdded->saveStegImage();
+    for(int i=0;i>){
+        imageToBeAdded->saveStegImage();
+    }
 }

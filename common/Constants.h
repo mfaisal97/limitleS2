@@ -6,7 +6,7 @@
 const std::string StegPassword = "Ay 7aga";
 const std::string DefaultImagePath = "Data/def/defImage.jpeg";
 const std::string PlainImagesDirectory = "Data/images/plain/";
-const std::string StegImagesDirectory = "Data/images/steg/";
+const std::string StegImagesDirectory = "Data/images/Steg/";
 const int MAX_MESSAGE_SIZE = 1024;
 
 //config
