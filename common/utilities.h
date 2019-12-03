@@ -33,7 +33,7 @@
 
 
 static bool isBitSet(char ch, int pos);
-static std::string encode(std::string message, std::string output_path, std::string input_path);
+static std::string encode(std::string message, std::string output_path, std::string ext , std::string input_path);
 static std::string base64Decode(const char* Data, int DataByte);
 static std::string base64Encode(const unsigned char* Data, int DataByte);
 static std::string Mat2Base64(const cv::Mat &img, std::string imgType);
@@ -48,10 +48,12 @@ static bool isBitSet(char ch, int pos) {
 	return false;
 }
 
-static std::string encode(std::string message, std::string output_path, std::string input_path = defaultImagePath){
+static std::string encode(std::string message, std::string output_path,std::string ext , std::string input_path = defaultImagePath){
     std::string file_path = "message.txt";
-    std::string output_file = output_path;
+    std::string output_file = output_path +  "." + ext;
     std::string image_path = input_path;
+
+	std::cout << "hey" << std::endl;
 
     //store message in text file
     std::ofstream out(file_path);
@@ -89,6 +91,8 @@ static std::string encode(std::string message, std::string output_path, std::str
 	We are manipulating bits in such way that changing LSB of the pixel values will not make a huge difference.
 	The image will still look similiar to the naked eye.
 	*/
+
+	std::cout << "hey" << std::endl;
 
 	for(int row=0; row < image.rows; row++) {
 		for(int col=0; col < image.cols; col++) {
@@ -148,8 +152,7 @@ static std::string encode(std::string message, std::string output_path, std::str
 
 	// Writes the stegnographic image
 	cv::imwrite(output_file, image);
-    return Mat2Base64(image, "png");
-
+    return Mat2Base64(image, ext);
 }
 
 static std::string base64Decode(const char* Data, int DataByte)
@@ -418,7 +421,7 @@ static std::string IntMapAsString(std::map<std::string, int> m){
 }
 
 static std::map<std::string, std::string> ParseMap(std::string * str){
-  std::cout<< "parsing: \t" << str <<std::endl;
+  std::cout<< "parsing: \t" << *str <<std::endl;
   std::map<std::string, std::string> m;
   int sz = GetNumberBetweenBracket(str);
   while(sz--){
@@ -426,12 +429,12 @@ static std::map<std::string, std::string> ParseMap(std::string * str){
     std::string val = GetBetweenBrackets(str);
     m[key] = val;
   }
-  std::cout<< "After parsing: \t" << str <<std::endl;
+  std::cout<< "After parsing: \t" << *str <<std::endl;
   return m;
 }
 
 static std::map<std::string, int> ParseIntMap(std::string * str){
-  std::cout<< "parsing: \t" << str <<std::endl;
+  std::cout<< "parsing: \t" << *str <<std::endl;
   std::map<std::string, int> m;
   int sz = GetNumberBetweenBracket(str);
   while(sz--){
@@ -439,7 +442,7 @@ static std::map<std::string, int> ParseIntMap(std::string * str){
     int val = GetNumberBetweenBracket(str);
     m[key] = val;
   }
-  std::cout<< "After parsing: \t" << str <<std::endl;
+  std::cout<< "After parsing: \t" << *str <<std::endl;
   return m;
 }
 
@@ -486,94 +489,94 @@ static bool ValidUserNameString(std::string name){
 
 
 
-static const std::string base64_chars =
-             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             "abcdefghijklmnopqrstuvwxyz"
-             "0123456789+/";
-
-
-static inline bool is_base64(unsigned char c) {
-  return (isalnum(c) || (c == '+') || (c == '/'));
-}
-
-static std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
-  std::string ret;
-  int i = 0;
-  int j = 0;
-  unsigned char char_array_3[3];
-  unsigned char char_array_4[4];
-
-  while (in_len--) {
-    char_array_3[i++] = *(bytes_to_encode++);
-    if (i == 3) {
-      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-      char_array_4[3] = char_array_3[2] & 0x3f;
-
-      for(i = 0; (i <4) ; i++)
-        ret += base64_chars[char_array_4[i]];
-      i = 0;
-    }
-  }
-
-  if (i)
-  {
-    for(j = i; j < 3; j++)
-      char_array_3[j] = '\0';
-
-    char_array_4[0] = ( char_array_3[0] & 0xfc) >> 2;
-    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-
-    for (j = 0; (j < i + 1); j++)
-      ret += base64_chars[char_array_4[j]];
-
-    while((i++ < 3))
-      ret += '=';
-
-  }
-
-  return ret;
-
-}
-
-static std::string base64_decode(std::string const& encoded_string) {
-  int in_len = encoded_string.size();
-  int i = 0;
-  int j = 0;
-  int in_ = 0;
-  unsigned char char_array_4[4], char_array_3[3];
-  std::string ret;
-
-  while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
-    char_array_4[i++] = encoded_string[in_]; in_++;
-    if (i ==4) {
-      for (i = 0; i <4; i++)
-        char_array_4[i] = base64_chars.find(char_array_4[i]);
-
-      char_array_3[0] = ( char_array_4[0] << 2       ) + ((char_array_4[1] & 0x30) >> 4);
-      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) +   char_array_4[3];
-
-      for (i = 0; (i < 3); i++)
-        ret += char_array_3[i];
-      i = 0;
-    }
-  }
-
-  if (i) {
-    for (j = 0; j < i; j++)
-      char_array_4[j] = base64_chars.find(char_array_4[j]);
-
-    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-
-    for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
-  }
-
-  return ret;
-}
+// static const std::string base64_chars =
+//              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+//              "abcdefghijklmnopqrstuvwxyz"
+//              "0123456789+/";
+//
+//
+// static inline bool is_base64(unsigned char c) {
+//   return (isalnum(c) || (c == '+') || (c == '/'));
+// }
+//
+// static std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
+//   std::string ret;
+//   int i = 0;
+//   int j = 0;
+//   unsigned char char_array_3[3];
+//   unsigned char char_array_4[4];
+//
+//   while (in_len--) {
+//     char_array_3[i++] = *(bytes_to_encode++);
+//     if (i == 3) {
+//       char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+//       char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+//       char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+//       char_array_4[3] = char_array_3[2] & 0x3f;
+//
+//       for(i = 0; (i <4) ; i++)
+//         ret += base64_chars[char_array_4[i]];
+//       i = 0;
+//     }
+//   }
+//
+//   if (i)
+//   {
+//     for(j = i; j < 3; j++)
+//       char_array_3[j] = '\0';
+//
+//     char_array_4[0] = ( char_array_3[0] & 0xfc) >> 2;
+//     char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+//     char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+//
+//     for (j = 0; (j < i + 1); j++)
+//       ret += base64_chars[char_array_4[j]];
+//
+//     while((i++ < 3))
+//       ret += '=';
+//
+//   }
+//
+//   return ret;
+//
+// }
+//
+// static std::string base64_decode(std::string const& encoded_string) {
+//   int in_len = encoded_string.size();
+//   int i = 0;
+//   int j = 0;
+//   int in_ = 0;
+//   unsigned char char_array_4[4], char_array_3[3];
+//   std::string ret;
+//
+//   while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+//     char_array_4[i++] = encoded_string[in_]; in_++;
+//     if (i ==4) {
+//       for (i = 0; i <4; i++)
+//         char_array_4[i] = base64_chars.find(char_array_4[i]);
+//
+//       char_array_3[0] = ( char_array_4[0] << 2       ) + ((char_array_4[1] & 0x30) >> 4);
+//       char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+//       char_array_3[2] = ((char_array_4[2] & 0x3) << 6) +   char_array_4[3];
+//
+//       for (i = 0; (i < 3); i++)
+//         ret += char_array_3[i];
+//       i = 0;
+//     }
+//   }
+//
+//   if (i) {
+//     for (j = 0; j < i; j++)
+//       char_array_4[j] = base64_chars.find(char_array_4[j]);
+//
+//     char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+//     char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+//
+//     for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+//   }
+//
+//   return ret;
+// }
 
 static bool WriteImageBinaryAsString(std::string directoryPath, std::string imageName, std::string ext, std::string content){
 		cv::Mat image = Base2Mat(content);

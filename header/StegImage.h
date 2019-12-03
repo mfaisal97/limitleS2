@@ -20,6 +20,7 @@ class StegImage{
         bool addUser(std::string userName, int views);
         bool increaseViews(std::string userName, int inc);
         bool setCreator(std::string userName);
+        bool changePlainName(std::string plainName);
 
         //getters
         bool canIncreaseViews(std::string name, int inc);
@@ -27,6 +28,8 @@ class StegImage{
         int getUserViews(std::string name);
         std::string getCreator();
         std::string getPlainName();
+
+        StegImageInfo getStegImageInfo();
 
         std::string AsString();
         char* AsCharArray();
