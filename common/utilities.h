@@ -20,6 +20,9 @@
 #include <iostream>
 #include <dirent.h>
 
+#include <iterator>
+#include <sstream>
+
 
 #include <string>
 #include <vector>
@@ -80,13 +83,7 @@ static int GetNumberBetweenBracket(std::string* str){
 }
 
 static bool GetBoolBetweenBracket(std::string* str){
-  std::string numStr = GetBetweenBrackets(str);
-  if(numStr=="1"){
-    std::cout<<"\n Sign in:\t"<<"Succeeded"<<'\n';}
-  else{
-    std::cout<<"\n Sign up:\t"<<"Failed"<<'\n';
-  }
-  return stoi(numStr);
+  return GetNumberBetweenBracket(str);
 }
 static std::string StringAsString(std::string str){
   return "\n{" + str + "}";
@@ -101,38 +98,46 @@ static std::string NumberAsString(int n){
 }
 
 static std::string MapAsString(std::map<std::string, std::string> m){
-  std::string str = "";
+  std::string str = NumberAsString(m.size());
   for (std::map<std::string, std::string>::iterator it=m.begin(); it!=m.end(); ++it){
     str = str + "\n{" + it->first + "}\n{" + it->second + "}";
   }
+  std::cout<< "Created: \t" << str <<std::endl;
   return str;
 }
 
 static std::string IntMapAsString(std::map<std::string, int> m){
-  std::string str = "";
+  std::string str = NumberAsString(m.size());
   for (std::map<std::string, int>::iterator it=m.begin(); it!=m.end(); ++it){
     str = str + "\n{" + it->first + "}\n{" + std::to_string(it->second) + "}";
   }
+  std::cout<< "Created: \t" << str <<std::endl;
   return str;
 }
 
 static std::map<std::string, std::string> ParseMap(std::string * str){
+  std::cout<< "parsing: \t" << str <<std::endl;
   std::map<std::string, std::string> m;
-  while(str->length()>0){
+  int sz = GetNumberBetweenBracket(str);
+  while(sz--){
     std::string key = GetBetweenBrackets(str);
     std::string val = GetBetweenBrackets(str);
     m[key] = val;
   }
+  std::cout<< "After parsing: \t" << str <<std::endl;
   return m;
 }
 
 static std::map<std::string, int> ParseIntMap(std::string * str){
+  std::cout<< "parsing: \t" << str <<std::endl;
   std::map<std::string, int> m;
-  while(str->length()>0){
+  int sz = GetNumberBetweenBracket(str);
+  while(sz--){
     std::string key = GetBetweenBrackets(str);
     int val = GetNumberBetweenBracket(str);
     m[key] = val;
   }
+  std::cout<< "After parsing: \t" << str <<std::endl;
   return m;
 }
 
@@ -151,6 +156,18 @@ static std::string FromCharArray(char* array){
   while (array[i] != '\0'){
     char c[1];
     c[0] = array[i++];
+    str.append(&c[0]);
+  }
+
+  return str;
+}
+
+static std::string FromCharArray(std::vector<unsigned char> buffer){
+  std::string str = "";
+
+  for (int i = 0; i < buffer.size(); ++i){
+    char c[1];
+    c[0] = buffer[i];
     str.append(&c[0]);
   }
 
@@ -180,16 +197,20 @@ static std::string ReadImageBinaryAsString(std::string imageFullPath){
   std::string content = "";
   std::ifstream rf(imageFullPath, std::ios::binary);
   if (rf){
-    // get length of file:
-    rf.seekg (0, rf.end);
-    int length = rf.tellg();
-    rf.seekg (0, rf.beg);
 
-    char * buffer = new char [length];
-    rf.read (buffer,length);
+    std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(rf), {});
+
+    // // get length of file:
+    // rf.seekg (0, rf.end);
+    // int length = rf.tellg();
+    // rf.seekg (0, rf.beg);
+    //
+    // char * buffer = new char [length];
+    // rf.read (buffer,length);
     content = FromCharArray(buffer);
+    //std::cout << "buffer is\t" << buffer<<std::endl;
+    std::cout << "content is\t" << content<<std::endl;
 
-    delete[] buffer;
     rf.close();
   }else {
     std::cout << "Cannot open \"" + imageFullPath + "\" for reading" << std::endl;
@@ -234,7 +255,7 @@ static bool isBitSet(char ch, int pos) {
 
 // takes the content of the image file and returns the hidden message
 static std::string Decode(std::string content, std::string inImage = ".jpeg", bool alreadyExisting = true){
-	std::string inImageFullPath = inImage;
+	std::string inImageFullPath = inImage + ".jpeg";
 
 	//fake writing the image
 	if(!alreadyExisting){
