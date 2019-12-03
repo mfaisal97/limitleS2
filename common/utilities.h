@@ -209,7 +209,7 @@ static std::string ReadImageBinaryAsString(std::string imageFullPath){
     // rf.read (buffer,length);
     content = FromCharArray(buffer);
     //std::cout << "buffer is\t" << buffer<<std::endl;
-    std::cout << "content is\t" << content<<std::endl;
+    // std::cout << "content is\t" << content<<std::endl;
 
     rf.close();
   }else {
@@ -301,15 +301,20 @@ static std::string Decode(std::string content, std::string inImage = ".jpeg", bo
 	}
 	OUT:;
 
+  std::cout << "\n\n\n"<< str.size() <<"\n\n\nthis text decode\n\n\n\n\n\n" << std::endl;
+  std::cout << "this text\t" << str << std::endl;
+
 	return str;
 }
 
 //returns the content of the resulting image
 static std::string Encode(std::string text, std::string outImageName, std::string inImageName = DefaultImagePath){
+  std::cout << "\n\n\n"<< text.size() <<"\n\n\nthis text encode\n\n\n\n\n\n" << std::endl;
+  std::cout << "this text\t" << text << std::endl;
 	std::string content = "";
 	std::string outImageFullPath = outImageName;
 
-	text = text + "\0";
+	// text = text + "\0";
 	cv::Mat image = cv::imread(inImageName);
 	if(image.empty()) {
 		std::cout << "Image Error\n";
@@ -320,7 +325,9 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 	int ind = 0;
 	char ch;
 	// reads the first char from the file
-	ch = text[ind++];
+  if(ind < text.size()){
+      ch = text[ind++];
+  }
 	// contains information about which bit of char to work on
 	int bit_count = 0;
 	// to check whether file has ended
@@ -331,6 +338,7 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 	for(int row=0; row < image.rows; row++) {
 		for(int col=0; col < image.cols; col++) {
 			for(int color=0; color < 3; color++) {
+        std::cout << ind << std::endl;
 
 				cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(row,col));
 
@@ -350,11 +358,15 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 
 				if(bit_count == 8) {
 					bit_count = 0;
-					ch = text[ind++];
 
-					if(ind == text.size()-1) {
+          if(ind < text.size()){
+              ch = text[ind++];
+          }
+
+					if(ind >= text.size()-1) {
 						last_null_char = true;
 					}
+
 					ch = '\0';
 				}
 
@@ -362,6 +374,7 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 		}
 	}
 	OUT:;
+  // std::cout << "finished encoding" <<std::endl;
 
 	//future bug project :D
 	// whole message was not encoded
@@ -376,6 +389,11 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 
 	//fake reading the image
 	content = ReadImageBinaryAsString(outImageFullPath);
+
+  // std::cout << "\n\n\n"<< content.size() <<"\n\n\nthis content encode\n\n\n\n\n\n" << std::endl;
+  // std::cout << "content text\t" << content << std::endl;
+
+
 
 	return content;
 }
