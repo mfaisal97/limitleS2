@@ -457,7 +457,7 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 				if(bit_count == 8) {
 					bit_count = 0;
 
-          if(ind < text.size()){
+          if(text[ind] != '\0'){
               ch = text[ind++];
           }
 
