@@ -255,7 +255,7 @@ static bool isBitSet(char ch, int pos) {
 
 // takes the content of the image file and returns the hidden message
 static std::string Decode(std::string content, std::string inImage = ".jpeg", bool alreadyExisting = true){
-	std::string inImageFullPath = inImage + ".jpeg";
+	std::string inImageFullPath = inImage;
 
 	//fake writing the image
 	if(!alreadyExisting){

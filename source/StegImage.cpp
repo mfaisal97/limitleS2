@@ -19,7 +19,7 @@ StegImage::StegImage(StegImageInfo _info){
 }
 
 StegImage::StegImage(std::string stegName){
-  std::string InfoString = Decode("", StegImagesDirectory + stegName, true);
+  std::string InfoString = Decode("", StegImagesDirectory + stegName + ".jpeg", true);
   info.Initialize(&InfoString);
 }
 
