@@ -182,7 +182,99 @@ static bool ValidUserNameString(std::string name){
   return (!any_of(name.begin(), name.end(), ::isdigit)) && ValidString(name);
 }
 
+
+
+static const std::string base64_chars =
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+
+static inline bool is_base64(unsigned char c) {
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+static std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
+  std::string ret;
+  int i = 0;
+  int j = 0;
+  unsigned char char_array_3[3];
+  unsigned char char_array_4[4];
+
+  while (in_len--) {
+    char_array_3[i++] = *(bytes_to_encode++);
+    if (i == 3) {
+      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+      char_array_4[3] = char_array_3[2] & 0x3f;
+
+      for(i = 0; (i <4) ; i++)
+        ret += base64_chars[char_array_4[i]];
+      i = 0;
+    }
+  }
+
+  if (i)
+  {
+    for(j = i; j < 3; j++)
+      char_array_3[j] = '\0';
+
+    char_array_4[0] = ( char_array_3[0] & 0xfc) >> 2;
+    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+
+    for (j = 0; (j < i + 1); j++)
+      ret += base64_chars[char_array_4[j]];
+
+    while((i++ < 3))
+      ret += '=';
+
+  }
+
+  return ret;
+
+}
+
+static std::string base64_decode(std::string const& encoded_string) {
+  int in_len = encoded_string.size();
+  int i = 0;
+  int j = 0;
+  int in_ = 0;
+  unsigned char char_array_4[4], char_array_3[3];
+  std::string ret;
+
+  while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+    char_array_4[i++] = encoded_string[in_]; in_++;
+    if (i ==4) {
+      for (i = 0; i <4; i++)
+        char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+      char_array_3[0] = ( char_array_4[0] << 2       ) + ((char_array_4[1] & 0x30) >> 4);
+      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) +   char_array_4[3];
+
+      for (i = 0; (i < 3); i++)
+        ret += char_array_3[i];
+      i = 0;
+    }
+  }
+
+  if (i) {
+    for (j = 0; j < i; j++)
+      char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+
+    for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+  }
+
+  return ret;
+}
+
 static bool WriteImageBinaryAsString(std::string imageFullPath, std::string content){
+  content = base64_decode(content);
   std::ofstream wf(imageFullPath, std::ios::out | std::ios::binary);
 	if(!wf) {
 		std::cout << "Cannot open Fake \"" + imageFullPath + "\" for writing" << std::endl;
@@ -215,7 +307,7 @@ static std::string ReadImageBinaryAsString(std::string imageFullPath){
   }else {
     std::cout << "Cannot open \"" + imageFullPath + "\" for reading" << std::endl;
   }
-  return content;
+  return base64_encode((unsigned char*)ToCharArray(content), content.size());
 }
 
 static std::string GetStringHash(std::string str){
@@ -269,7 +361,7 @@ static std::string Decode(std::string content, std::string inImage = ".jpeg", bo
 		exit(-1);
 	}
 
-  std::cout<< image <<std::endl;
+  // std::cout<< image <<std::endl;
 
 	char ch=0;
 	int bit_count = 0;
@@ -293,9 +385,10 @@ static std::string Decode(std::string content, std::string inImage = ".jpeg", bo
 
 					bit_count = 0;
           char c = ch;
-          // string nstr=" ";
-          // nstr[0] = ch
-					str.append(" ");
+          std::string nstr=" ";
+          nstr[0] = ch;
+          str = str + nstr;
+					// str.append(" ");
 					ch = 0;
 				}
 				else {
@@ -317,6 +410,7 @@ static std::string Decode(std::string content, std::string inImage = ".jpeg", bo
 static std::string Encode(std::string text, std::string outImageName, std::string inImageName = DefaultImagePath){
   std::cout << "\n\n\n"<< text.size() <<"\n\n\nthis text encode\n\n\n\n\n\n" << std::endl;
   std::cout << "this text\t" << text << std::endl;
+  text = text +"\0";
 	std::string content = "";
 	std::string outImageFullPath = outImageName;
 
@@ -331,9 +425,7 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 	int ind = 0;
 	char ch;
 	// reads the first char from the file
-  if(ind < text.size()){
-      ch = text[ind++];
-  }
+    ch = text[ind++];
 	// contains information about which bit of char to work on
 	int bit_count = 0;
 	// to check whether file has ended
@@ -344,7 +436,7 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 	for(int row=0; row < image.rows; row++) {
 		for(int col=0; col < image.cols; col++) {
 			for(int color=0; color < 3; color++) {
-        std::cout << ind << std::endl;
+        // std::cout << ind << std::endl;
 
 				cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(row,col));
 
@@ -371,11 +463,11 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
 
 					if(ind >= text.size()-1) {
 						last_null_char = true;
+            ch = '\0';
 					}
-
-					ch = '\0';
 				}
 
+        ind++;
 			}
 		}
 	}
@@ -391,6 +483,7 @@ static std::string Encode(std::string text, std::string outImageName, std::strin
   //cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
   //cv::imshow("image", image);
   //cv::waitKey(30);
+  // std::cout<< image <<std::endl;
 	cv::imwrite(outImageFullPath,image);
 
 	//fake reading the image
