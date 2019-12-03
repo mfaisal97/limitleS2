@@ -53,8 +53,7 @@ void AddImageWindow::on_pushButton_clicked()
         }
     }
     imageToBeAdded->saveStegImage();
-    std::cout<<"Hash"<<imageToBeAdded->GetHash();
-    //peer->RemoteUpdateStegImage();
+    peer->RemoteUpdateStegImage(imageToBeAdded->GetHash());
     //close();
 }
 
