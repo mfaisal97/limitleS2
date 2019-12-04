@@ -728,4 +728,23 @@ static std::vector<std::string> ListFiles( const char* path){
   return files;
 }
 
+static std::vector<std::string> ListDirectories( const char* path){
+  std::vector<std::string>  dirs;
+
+	DIR *dir;
+	struct dirent *ent;
+		if ((dir = opendir (path)) != NULL) {
+
+		while ((ent = readdir (dir)) != NULL) {
+			dirs.push_back(ent->d_name);
+		}
+		closedir (dir);
+	} else {
+		perror ("");
+		return EXIT_FAILURE;
+	}
+
+	return dirs;
+}
+
 #endif
