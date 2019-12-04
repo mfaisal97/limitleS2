@@ -11,12 +11,11 @@
 #include <string>
 #include <map>
 
-class Peer : Server{
+class Peer : public Server{
   private:
     UserInfo userInfo;
     Client serviceDirectory;
     std::map<std::string, Client*> clients;
-    bool* serverRunning;
   public:
     Peer(std::string _name, std::string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
     Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
@@ -58,7 +57,7 @@ class Peer : Server{
 
     //helpers
     int GetNextRPCID();
-    void startPeerServer();
+    // void startPeerServer();
 
     ~Peer();
 };
