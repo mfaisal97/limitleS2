@@ -741,7 +741,7 @@ static std::vector<std::string> ListDirectories( const char* path){
 		closedir (dir);
 	} else {
 		perror ("");
-		return EXIT_FAILURE;
+		exit(-1);
 	}
 
 	return dirs;
