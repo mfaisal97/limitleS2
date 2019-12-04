@@ -74,8 +74,8 @@ bool Peer::SetAuthInfo(std::string userName, std::string password){
   return SetUserName(userName) && SetPassword(password);
 }
 
-std::string Peer:: GetAuthInfo(){
-  return userInfo.authInfo.password+"  "+userInfo.authInfo.name;
+AuthInfo Peer:: GetAuthInfo(){
+  return userInfo.authInfo;
 }
 
 
@@ -104,10 +104,10 @@ bool Peer::CommunicationInfoUpdate(){
 
 std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName){
   std::map<std::string, std::string> rtr;
-  std::vector<std::string> filesNames = ListFiles(ToCharArray(StegImagesDirectory));
+  std::vector<std::string> filesNames = ListDirectories(ToCharArray(StegImagesDirectory));
 
   for(int i = 0; i < filesNames.size(); ++i){
-    StegImage image(filesNames[i] + ".jpeg");
+    StegImage image(filesNames[i]);
     if (image.hasViews(userName)){
       rtr[image.GetHash()] = image.getPlainName();
     }
@@ -118,13 +118,13 @@ std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName
 
 bool Peer::UpdateStegImage(std::string stegImageName, std::string stegImageContent){
   if(IsAuthorizedUpdate(stegImageName, stegImageContent)){
-    return WriteImageBinaryAsString(StegImagesDirectory, stegImageName, "jpeg", stegImageContent);
+    return WriteImageBinaryAsString(StegImagesDirectory, stegImageName, "png", stegImageContent);
   }
   return false;
 }
 
 cv::Mat Peer::GetImage(std::string ImageID){
-  StegImage stegImage(ImageID + ".jpeg");
+  StegImage stegImage(ImageID);
   cv::Mat image;
 
   if (stegImage.increaseViews(GetUserName(), -1)){
@@ -146,8 +146,8 @@ bool Peer::IsClient(std::string userName){
 }
 
 bool Peer::IsStegImage(std::string stegName){
-  std::vector<std::string> files = ListFiles(ToCharArray(StegImagesDirectory));
-  return std::find(files.begin(), files.end(),stegName + ".jpeg")!=files.end();
+  std::vector<std::string> files = ListDirectories(ToCharArray(StegImagesDirectory));
+  return std::find(files.begin(), files.end(), stegName)!=files.end();
 }
 
 bool Peer::IsAuthorizedUpdate(std::string stegImageName, std::string stegImageContent){
@@ -232,7 +232,7 @@ bool Peer::RemoteRetrieveImage(std::string stegName){
       Message* reply = it->second->execute(request);
       std::string replystr = FromCharArray((char*)reply->getMessage());
       if(replystr.size()>0){
-        bool done = WriteImageBinaryAsString(StegImagesDirectory, stegName, "jpeg", replystr);
+        bool done = WriteImageBinaryAsString(StegImagesDirectory, stegName, "png", replystr);
         if (done){
           return true;
         }
@@ -264,6 +264,10 @@ int Peer::RemoteUpdateStegImage(std::string stegName){
 
 int Peer::GetNextRPCID(){
   return 0;
+}
+
+void Peer::startPeerServer(){
+
 }
 
 Peer::~Peer(){
