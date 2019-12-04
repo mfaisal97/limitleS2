@@ -4,7 +4,7 @@
 #include <string>
 
 const std::string StegPassword = "Ay 7aga";
-const std::string defaultImagePath = "Data/def/defImage.jpeg";
+const std::string defaultImagePath = "Data/def/defImage.png";
 const std::string PlainImagesDirectory = "Data/images/plain";
 const std::string StegImagesDirectory = "Data/images/Steg";
 const int MAX_MESSAGE_SIZE = 1024;
@@ -12,6 +12,12 @@ const int MAX_MESSAGE_SIZE = 1024;
 //config
 static int PeerServerPort = 4051;
 static int ServiceDirectoryPort = 4050;
-static std::string ServiceDirectoryAddr = "10.40.49.213";
+
+//Shehab IP
+//static std::string ServiceDirectoryAddr = "10.40.49.213";
+
+//mickey IP
+static std::string ServiceDirectoryAddr = "10.40.35.176";
+
 
 #endif
