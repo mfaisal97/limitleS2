@@ -507,7 +507,7 @@ static bool ValidUserNameString(std::string name){
 static bool createDirectoryWithFiles(std::string directoryName, int numberOfFiles, std::string message){
 	//open directory
 	int messageSize = message.size();
-	if (mkdir(ToCharArray(directoryName), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
+	if (mkdir(ToCharArray(directoryName), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
 	{
 		std::cout << "could not create directories\t" + directoryName << std::endl;
 		return false;
