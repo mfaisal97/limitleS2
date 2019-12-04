@@ -40,6 +40,12 @@ bool StegImage::addUser(std::string userName, int views){
   return false;
 }
 
+StegImageInfo StegImage::getStegImageInfo(){
+  return info;
+}
+
+
+
 bool StegImage::increaseViews(std::string userName, int inc){
   if(canIncreaseViews(userName, inc)){
     info.remainingViews[userName] = info.remainingViews[userName] + inc;
@@ -55,6 +61,11 @@ bool StegImage::setCreator(std::string userName){
     return true;
   }
   return false;
+}
+
+bool StegImage::changePlainName(std::string plainName){
+  info.plainName = plainName;
+  return true;
 }
 
 
@@ -86,7 +97,7 @@ std::string StegImage::getPlainName(){
 
 std::string StegImage::AsString(){
   std::string hash = info.GetHash();
-  std::string encoding = encode(info.AsString(), StegImagesDirectory + hash + ".jpeg");
+  std::string encoding = encode(info.AsString(), StegImagesDirectory + "/" + hash, "jpeg");
   return encoding;
 }
 
@@ -106,7 +117,10 @@ bool StegImage::removePlainImage(){
 bool StegImage::saveStegImage(){
   std::string hash = info.GetHash();
   std::string infoStr = info.AsString();
-  std::string encoding = encode(infoStr, StegImagesDirectory + hash + ".jpeg");
+  std::cout << "Tring to encode \t" << infoStr << std::endl;
+  std::cout << "In the following path \t" <<  StegImagesDirectory + "/" + hash + ".jpeg" << std::endl;
+  std::string encoding = encode(infoStr, StegImagesDirectory + "/" + hash, "jpeg");
+  std::cout << "got the following encoding \t" << encoding << std::endl;
   return true;
 }
 
