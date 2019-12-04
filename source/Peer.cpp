@@ -59,6 +59,8 @@ Message *  Peer::doOperation(Message * message){
 bool Peer::UpdateClients(std::map<std::string, ConnectionInfo> connectionsInfo){
   bool done = true;
   for (auto it=connectionsInfo.begin(); it!=connectionsInfo.end(); ++it){
+    std::string str = it->second.AsString();
+    std::cout << "trying to connect to\t" << it->first << "\t" << str <<std::endl;
     done = done && UpdateClient(it->first, it->second);
   }
   return true;

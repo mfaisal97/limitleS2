@@ -87,6 +87,7 @@ bool ServiceDirectory::SignUp(UserInfo userInfo){
   }
 
   Users.insert(std::pair<std::string ,UserInfo>(userInfo.authInfo.name, userInfo));
+  UpdateConnectionInfo(userInfo);
   return true;
 }
 
@@ -120,7 +121,9 @@ bool ServiceDirectory::UpdateConnectionInfo(UserInfo userInfo){
       struct sockaddr_in sa = udpServerSocket->getPeerAddr();
       inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
 
-      it->second.connectionInfo.userAddr = str;
+      std::cout << str << std::endl;
+
+      it->second.connectionInfo.userAddr = ToCharArray(str);
       return true;
     }
   }

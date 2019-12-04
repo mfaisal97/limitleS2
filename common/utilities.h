@@ -365,7 +365,9 @@ static void makeLocalSA(struct sockaddr_in *sa){
 static void makeDestSA(struct sockaddr_in * sa, char *hostname, int port){ struct hostent *host;
     sa->sin_family = AF_INET;
     if((host = gethostbyname(hostname))== NULL){
-        printf("Unknown host name\n");
+        // printf("Unknown host name\t");
+				// printf(hostname);
+				// printf("\n");
         exit(-1);
     }
     sa-> sin_addr = *(struct in_addr *) (host->h_addr);
