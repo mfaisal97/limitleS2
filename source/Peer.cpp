@@ -107,11 +107,14 @@ std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName
   std::vector<std::string> filesNames = ListDirectories(ToCharArray(StegImagesDirectory));
 
   for(int i = 0; i < filesNames.size(); ++i){
+    std::cout<<filesNames[i] <<std::endl;
+    if(filesNames[i] != "." && filesNames[i] != ".."){
     StegImage image(filesNames[i]);
     if (image.hasViews(userName)){
       rtr[image.GetHash()] = image.getPlainName();
     }
   }
+}
 
   return rtr;
 }
@@ -266,9 +269,6 @@ int Peer::GetNextRPCID(){
   return 0;
 }
 
-void Peer::startPeerServer(){
-
-}
 
 Peer::~Peer(){
 }
