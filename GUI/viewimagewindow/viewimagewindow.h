@@ -17,6 +17,7 @@ class ViewImageWindow : public QDialog
 
 public:
     explicit ViewImageWindow(QWidget *parent = nullptr);
+    void showLists(std::map<std::string,std::string> *exMap=nullptr,std::map<std::string,std::string> *exMap2=nullptr);
     void setPeer(Peer* _peer){
         peer = _peer;
     }

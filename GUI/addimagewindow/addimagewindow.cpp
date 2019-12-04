@@ -54,6 +54,6 @@ void AddImageWindow::on_pushButton_clicked()
     }
     imageToBeAdded->saveStegImage();
     peer->RemoteUpdateStegImage(imageToBeAdded->GetHash());
-    //close();
+    close();
 }
 
