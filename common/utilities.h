@@ -736,6 +736,7 @@ static std::vector<std::string> ListDirectories( const char* path){
 		if ((dir = opendir (path)) != NULL) {
 
 		while ((ent = readdir (dir)) != NULL) {
+			if(ent->d_name != "." && ent->d_name != "..")
 			dirs.push_back(ent->d_name);
 		}
 		closedir (dir);
