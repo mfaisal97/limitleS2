@@ -1,34 +1,29 @@
 #include "viewimagewindow.h"
 #include "ui_viewimagewindow.h"
 
-ViewImageWindow::ViewImageWindow(QWidget *parent) : QDialog(parent),
+ViewImageWindow::ViewImageWindow(QWidget *parent,Peer* _peer) : QDialog(parent),
                                                     ui(new Ui::ViewImageWindow)
 {
     ui->setupUi(this);
+    setPeer(_peer);
+    peer->SearchForStegNames(peer->GetUserName());
+    peer->RemoteSearchForStegNames(peer->GetUserName());
+    showLists();
     // QPixmap pix("/home/khatter/Desktop/GUI_Distrib/GUI/prof.jpg");
     // ui->label->setPixmap(pix);
 }
 
-void ViewImageWindow::showLists(std::map<std::string, std::string> *exMap, std::map<std::string, std::string> *exMap2)
+void ViewImageWindow::showLists()
 {
-    // (*exMap)["baua"] = "1";
-    // (*exMap)["aona"] = "10";
-    // (*exMap)["oana"] = "100";
-    // (*exMap)["ojao"] = "1000";
 
-    // (*exMap2)["iobd"] = "2";
-    // (*exMap2)["iobs"] = "20";
-    // (*exMap2)["ioba"] = "200";
-    // (*exMap2)["iobi"] = "2000";
-
-    for (auto cursor = exMap->begin(); cursor != exMap->end(); ++cursor)
+    for (auto cursor = localMap->begin(); cursor != localMap->end(); ++cursor)
     {
         std::string temp = cursor->first + " " + cursor->second;
         QString qstr = QString::fromStdString(temp);
         ui->listWidget->addItem(qstr);
     }
 
-    for (auto cursor = exMap2->begin(); cursor != exMap2->end(); ++cursor)
+    for (auto cursor = remoteMap->begin(); cursor != remoteMap->end(); ++cursor)
     {
         std::string temp = cursor->first + " " + cursor->second;
         QString qstr = QString::fromStdString(temp);
@@ -46,7 +41,11 @@ void ViewImageWindow::on_pushButton_2_clicked()
 {
     if (ui->listWidget->currentItem())
     {
-        ui->listWidget->currentItem()->text();
+        QString qstr = ui->listWidget->currentItem()->text();
+        std::string s = qstr.toUtf8().constData();
+        std::string first_token = s.substr(0, s.find(' '));
+        peer->GetImage(first_token);
+
     }
 }
 
@@ -54,11 +53,31 @@ void ViewImageWindow::on_pushButton_3_clicked()
 {
     if (ui->listWidget_2->currentItem())
     {
-        ui->listWidget_2->currentItem()->text();
+        QString qstr = ui->listWidget_2->currentItem()->text();
+        std::string s = qstr.toUtf8().constData();
+        std::string first_token = s.substr(0, s.find(' '));
+        peer->RemoteRetrieveImage(first_token);
     }
 }
 
 ViewImageWindow::~ViewImageWindow()
 {
     delete ui;
+}
+
+void ViewImageWindow::on_pushButton_4_clicked()
+{
+    std::map<std::string, std::string> temp;
+    temp = peer->SearchForStegNames(peer->GetUserName());
+    localMap = &temp;
+    showLists();
+
+}
+
+void ViewImageWindow::on_pushButton_5_clicked()
+{
+    std::map<std::string, std::string> temp;
+    temp = peer->RemoteSearchForStegNames(peer->GetUserName());
+    remoteMap = &temp;
+    showLists();
 }

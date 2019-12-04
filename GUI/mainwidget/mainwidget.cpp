@@ -32,7 +32,6 @@ void MainWidget::on_AddImageButton_clicked()
 
 void MainWidget::on_ViewImageButton_clicked()
 {
-    v= new ViewImageWindow(this);
-    v->setPeer(peer);
+    v= new ViewImageWindow(this,peer);
     v->show();
 }
