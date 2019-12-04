@@ -78,3 +78,5 @@ CMakeFiles
 CMakeCache.txt
 cmake_install.cmake
 limitleS2
+
+*.png

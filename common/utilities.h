@@ -7,6 +7,9 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+
+#include <sys/stat.h>
+
 // #include <algorithm>
 // #include <cctype>
 // #include <cerrno>
@@ -22,7 +25,6 @@
 
 #include <iterator>
 #include <sstream>
-
 
 #include <string>
 #include <vector>
@@ -48,12 +50,15 @@ static bool isBitSet(char ch, int pos) {
 	return false;
 }
 
-static std::string encode(std::string message, std::string output_path,std::string ext , std::string input_path = defaultImagePath){
+static std::string encode(std::string message, std::string output_path, std::string ext = "png", std::string input_path = defaultImagePath){
     std::string file_path = "message.txt";
-    std::string output_file = output_path +  "." + ext;
+    std::string output_file = output_path + "." + ext;
     std::string image_path = input_path;
 
-	std::cout << "hey" << std::endl;
+		// std::cout << "Trying to encode \t" << message << std::endl;
+		// std::cout << "In the following path \t" << output_file << std::endl;
+		// std::cout << "With the following path as default\t" << input_path << std::endl;
+
 
     //store message in text file
     std::ofstream out(file_path);
@@ -91,8 +96,6 @@ static std::string encode(std::string message, std::string output_path,std::stri
 	We are manipulating bits in such way that changing LSB of the pixel values will not make a huge difference.
 	The image will still look similiar to the naked eye.
 	*/
-
-	std::cout << "hey" << std::endl;
 
 	for(int row=0; row < image.rows; row++) {
 		for(int col=0; col < image.cols; col++) {
@@ -152,8 +155,10 @@ static std::string encode(std::string message, std::string output_path,std::stri
 
 	// Writes the stegnographic image
 	cv::imwrite(output_file, image);
-    return Mat2Base64(image, ext);
+    return Mat2Base64(image, "png");
+
 }
+
 
 static std::string base64Decode(const char* Data, int DataByte)
 {
@@ -277,7 +282,8 @@ static cv::Mat Base2Mat(std::string &base64_data)
 
 
 static std::string decode(std::string steg_base64) {
-    cv::Mat image = Base2Mat(steg_base64);
+  cv::Mat image = Base2Mat(steg_base64);
+	// std::cout << "\nRead following image\n" << steg_base64 << std::endl;
 	// Stores original image
 	// cv::Mat image = cv::imread("output.png");
 	// if(image.empty()) {
@@ -289,7 +295,7 @@ static std::string decode(std::string steg_base64) {
 	char ch=0;
 	// contains information about which bit of char to work on
 	int bit_count = 0;
-	std::string rt = "";
+	std::string decoded = "";
 
 	/*
 	To extract the message from the image, we will iterate through the pixels and extract the LSB of
@@ -311,14 +317,17 @@ static std::string decode(std::string steg_base64) {
 
 				// bit_count is 8, that means we got our char from the encoded image
 				if(bit_count == 8) {
+					// std::cout << "hey" << std::endl;
 
 					// NULL char is encountered
-					if(ch == '\0')
+					if(ch == '\0'){
+						// std::cout << "Reached end of file in decoding\t";
 						goto OUT;
+					}
 
 					bit_count = 0;
-					rt = rt + " ";
-					rt[rt.size() - 1] = ch;
+					//std::cout << ch;
+					decoded += ch;
 					ch = 0;
 				}
 				else {
@@ -330,8 +339,8 @@ static std::string decode(std::string steg_base64) {
 	}
 	OUT:;
 
-
-    return "0";
+		// std::cout << "this rt:\t" << decoded.size() << std::endl;
+    return decoded;
 }
 
 
@@ -421,7 +430,7 @@ static std::string IntMapAsString(std::map<std::string, int> m){
 }
 
 static std::map<std::string, std::string> ParseMap(std::string * str){
-  std::cout<< "parsing: \t" << *str <<std::endl;
+  // std::cout<< "parsing: \t" << *str <<std::endl;
   std::map<std::string, std::string> m;
   int sz = GetNumberBetweenBracket(str);
   while(sz--){
@@ -429,12 +438,12 @@ static std::map<std::string, std::string> ParseMap(std::string * str){
     std::string val = GetBetweenBrackets(str);
     m[key] = val;
   }
-  std::cout<< "After parsing: \t" << *str <<std::endl;
+  // std::cout<< "After parsing: \t" << *str <<std::endl;
   return m;
 }
 
 static std::map<std::string, int> ParseIntMap(std::string * str){
-  std::cout<< "parsing: \t" << *str <<std::endl;
+  // std::cout<< "parsing: \t" << *str <<std::endl;
   std::map<std::string, int> m;
   int sz = GetNumberBetweenBracket(str);
   while(sz--){
@@ -442,7 +451,7 @@ static std::map<std::string, int> ParseIntMap(std::string * str){
     int val = GetNumberBetweenBracket(str);
     m[key] = val;
   }
-  std::cout<< "After parsing: \t" << *str <<std::endl;
+  // std::cout<< "After parsing: \t" << *str <<std::endl;
   return m;
 }
 
@@ -459,9 +468,8 @@ static std::string FromCharArray(char* array){
   int i = 0;
 
   while (array[i] != '\0'){
-    char c[1];
-    c[0] = array[i++];
-    str.append(&c[0]);
+		str += array[i];
+		i++;
   }
 
   return str;
@@ -486,6 +494,69 @@ static bool ValidString(std::string str){
 static bool ValidUserNameString(std::string name){
   return (!any_of(name.begin(), name.end(), ::isdigit)) && ValidString(name);
 }
+
+
+
+// 7agat SHehab beh
+// 7agat SHehab beh
+// 7agat SHehab beh
+// 7agat SHehab beh
+// 7agat SHehab beh
+// 7agat SHehab beh
+// 7agat SHehab beh
+static bool createDirectoryWithFiles(std::string directoryName, int numberOfFiles, std::string message){
+	//open directory
+	int messageSize = message.size();
+	if (mkdir(ToCharArray(directoryName), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0)
+	{
+		std::cout << "could not create directories\t" + directoryName << std::endl;
+		return false;
+	}
+	else {
+
+		//partition
+		int j = 0;
+		for (int i = 0; i < messageSize; i += messageSize/numberOfFiles){
+
+			std::string str = message.substr(i, messageSize/numberOfFiles);
+			encode(str, directoryName + '/' + std::to_string(j) );
+
+			j++;
+		}
+	}
+	return true;
+}
+
+
+static int getNumberOfFiles(int messageSize){
+	cv::Mat image = cv::imread(defaultImagePath);
+	if(image.empty()) {
+		std::cout << "Image Error\n";
+		exit(-1);
+	}
+	float maxNumberOfChars = image.cols * image.rows * 3 / 10;
+	float numberOfFiles = messageSize / maxNumberOfChars;
+	return ceil(numberOfFiles);
+
+}
+
+static std::string decodeAllInDirectory(std::string dirc, std::vector<std::string> files){
+	std::string decoded = "";
+	for(int it = 0; it < files.size(); ++it) {
+		cv::Mat image = cv::imread(dirc + "/" + files[it]);
+		if(image.empty()) {
+			std::cout << "Image Error\n";
+			exit(-1);
+		}
+		decoded += decode(Mat2Base64(image, "png"));
+}
+return decoded;
+}
+
+// 7agat SHehab beh
+// 7agat SHehab beh
+// 7agat SHehab beh
+
 
 
 
@@ -625,7 +696,7 @@ static std::string ReadImageBinaryAsString(std::string directoryPath, std::strin
 		exit(-1);
 	}
 
-	std::string stegImageStr = Mat2Base64(image, "jpeg");
+	std::string stegImageStr = Mat2Base64(image, ext);
 	return stegImageStr;
 }
 

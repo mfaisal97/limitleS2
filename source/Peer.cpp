@@ -169,9 +169,9 @@ bool Peer::RemoteSignUp(){
   std::string requeststr = userInfo.AsString();
   char* requestStrChar = ToCharArray(requeststr);
   Message* request = new Message(OperationType::SignUp, (void*)requestStrChar, requeststr.size(), GetNextRPCID());
-  DebugHere(request, request);
+  // DebugHere(request, request);
   Message* reply = serviceDirectory.execute(request);
-  DebugHere(request, reply);
+  // DebugHere(request, reply);
   std::string replystr = FromCharArray((char*)reply->getMessage());
   return GetBoolBetweenBracket(&replystr);
   std::cout <<"finished signing up\n";

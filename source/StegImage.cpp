@@ -19,7 +19,9 @@ StegImage::StegImage(StegImageInfo _info){
 }
 
 StegImage::StegImage(std::string stegName){
-  std::string InfoString = decode(ReadImageBinaryAsString(StegImagesDirectory, stegName, "jpeg"));
+  std::cout << "Loading Steg Name " << StegImagesDirectory + "/" + stegName << std::endl;
+  std::vector<std::string> files = ListFiles(ToCharArray(StegImagesDirectory + "/" + stegName ));
+  std::string InfoString = decodeAllInDirectory(StegImagesDirectory + "/" + stegName, files);
   // std::cout << InfoString << std::endl;
   info.Initialize(&InfoString);
 }
@@ -96,8 +98,13 @@ std::string StegImage::getPlainName(){
 }
 
 std::string StegImage::AsString(){
+  std::string str = info.AsString();
   std::string hash = info.GetHash();
-  std::string encoding = encode(info.AsString(), StegImagesDirectory + "/" + hash, "jpeg");
+  int numberOfFiles = getNumberOfFiles(str.size());
+
+  bool created = createDirectoryWithFiles(StegImagesDirectory + "/" + hash, numberOfFiles, str);
+  std::string encoding = "";
+
   return encoding;
 }
 
@@ -111,16 +118,18 @@ bool StegImage::savePlainImage(){
 }
 
 bool StegImage::removePlainImage(){
-  return remove(ToCharArray(PlainImagesDirectory + info.plainName)) == 0;
+  return remove(ToCharArray(PlainImagesDirectory + "/" + info.plainName)) == 0;
 }
 
 bool StegImage::saveStegImage(){
+  std::string str = info.AsString();
   std::string hash = info.GetHash();
-  std::string infoStr = info.AsString();
-  std::cout << "Tring to encode \t" << infoStr << std::endl;
-  std::cout << "In the following path \t" <<  StegImagesDirectory + "/" + hash + ".jpeg" << std::endl;
-  std::string encoding = encode(infoStr, StegImagesDirectory + "/" + hash, "jpeg");
-  std::cout << "got the following encoding \t" << encoding << std::endl;
+  int numberOfFiles = getNumberOfFiles(str.size());
+
+  bool created = createDirectoryWithFiles(StegImagesDirectory + "/" + hash, numberOfFiles, str);
+
+  //std::string encoding = "";
+  // std::cout << "got the following encoding \t" << encoding << std::endl;
   return true;
 }
 

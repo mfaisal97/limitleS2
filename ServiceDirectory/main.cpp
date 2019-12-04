@@ -33,22 +33,34 @@ int main(int argc, char *argv[]){
 
     //client start
     else if( argc >= 5 && strcmp( argv[1], "client") == 0){
+      cout << "Started Creating StegImage"  << endl;
       Peer peer("mickey", "mouse", 4051, ToCharArray(ServiceDirectoryAddr), ServiceDirectoryPort);
       peer.SetAuthInfo("mickey", "mouse");
-      // peer.RemoteSignUp();
+      peer.RemoteSignUp();
       peer.RemoteSignIn();
       // peer.RemoteSignOut();
-      StegImage imOne ("01.jpeg", "mickey");
+
+      std::string testName = "01.png";
+      StegImage imOne (testName, "mickey");
 
       cout << "Created StegImage"  << endl;
 
       imOne.saveStegImage();
+      //
+      cout << "Saved StegImage"  << endl;
+      //
 
-      cout << "Save StegImage"  << endl;
-
+      cout << "Trying to load\t" << imOne.GetHash() << endl;
       StegImage imTwo (imOne.GetHash());
-      imTwo.changePlainName("001.jpeg");
+      imTwo.changePlainName("0" + testName);
       imTwo.savePlainImage();
+      // imTwo.removePlainImage();
+      // // cout << s <<endl;
+      //
+      // string s = encode("y wadddddd", "hey.png");
+      // cout << decode(s);
+
+
       //im.savePlainImage();
       // Client c (argv[2], std::stoi(argv[3]));
       // while (true){

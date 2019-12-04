@@ -25,6 +25,7 @@ void Server::sendReply (Message * _message){
   inet_ntop(AF_INET,&(sa.sin_addr), str, INET_ADDRSTRLEN);
   UDPClientSocket * child = new UDPClientSocket (str, ntohs(sa.sin_port));
   //cout << "habd: " << str  << "\t"<< sa.sin_port << "\t" << m->habd << "\n";
+  // std::cout << "Sent this" << FromCharArray(_message->marshal()) <<std::endl;
   child->writeToSocket(_message->marshal(), -1);
 }
 

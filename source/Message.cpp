@@ -17,7 +17,7 @@ Message::Message(std::string _marshalled_base64){
   operation = (OperationType)GetNumberBetweenBracket(&str);
   rpc_id = GetNumberBetweenBracket(&str);
   message_size = GetNumberBetweenBracket(&str);
-  message = (void*) ToCharArray(str);
+  message = (void*) ToCharArray(str.substr(0, message_size));
 }
 
 char * Message::marshal (){
