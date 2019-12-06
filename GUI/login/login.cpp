@@ -23,7 +23,7 @@ void Login::on_pushButton_clicked()
     peer->SetAuthInfo(ui->lineEdit->text().toUtf8().constData(), ui->lineEdit_2->text().toUtf8().constData());
     //std::cout<<"In logincpp checking if username and password is set"<<peer->GetAuthInfo();
     //peer->SetAuthInfo("mickey", "mouse");
-    if(peer->RemoteSignIn()){
+        if(peer->RemoteSignIn()){
         close();
     }
 

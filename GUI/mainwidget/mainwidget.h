@@ -6,6 +6,7 @@
 #include "../viewimagewindow/viewimagewindow.h"
 #include "../login/login.h"
 #include "../../header/Peer.h"
+#include "../../common/Constants.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWidget; }

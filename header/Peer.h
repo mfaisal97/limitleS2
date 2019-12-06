@@ -43,7 +43,7 @@ class Peer : public Server{
 
     // local getters
     std::map<std::string, std::string> SearchForStegNames(std::string userName);
-    cv::Mat GetImage(std::string ImageID);
+    StegImage GetImage(std::string ImageID);
     bool IsClient(std::string userName);
     bool IsStegImage(std::string stegName);
     bool IsAuthorizedUpdate(std::string stegImageName, std::string stegImageContent);

@@ -17,7 +17,10 @@ static int ServiceDirectoryPort = 4050;
 //static std::string ServiceDirectoryAddr = "10.40.49.213";
 
 //mickey IP
-static std::string ServiceDirectoryAddr = "10.40.35.176";
+// static std::string ServiceDirectoryAddr = "10.40.35.176";
+
+//Khatter IP
+static std::string ServiceDirectoryAddr = "10.40.37.251";
 
 
 #endif

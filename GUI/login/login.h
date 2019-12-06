@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "../../header/Peer.h"
+#include "../../common/Constants.h"
 
 namespace Ui {
 class Login;

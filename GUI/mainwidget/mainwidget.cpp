@@ -11,7 +11,8 @@ MainWidget::MainWidget(QWidget *parent,Peer* _peer)
     Login l;
     l.setPeer(_peer);
     l.setModal(true);
-    l.exec();
+    l.exec(); 
+    close();
 
 }
 

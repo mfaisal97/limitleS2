@@ -6,8 +6,13 @@ ViewImageWindow::ViewImageWindow(QWidget *parent,Peer* _peer) : QDialog(parent),
 {
     ui->setupUi(this);
     setPeer(_peer);
-    peer->SearchForStegNames(peer->GetUserName());
-    peer->RemoteSearchForStegNames(peer->GetUserName());
+    std::map<std::string, std::string> temp;
+    std::map<std::string, std::string> temp2;
+    std:: string username = peer->GetUserName();
+    temp = peer->SearchForStegNames(username);
+    //temp2 =peer->RemoteSearchForStegNames(username);
+    localMap=&temp;
+    remoteMap = &temp2;
     showLists();
     // QPixmap pix("/home/khatter/Desktop/GUI_Distrib/GUI/prof.jpg");
     // ui->label->setPixmap(pix);
@@ -44,7 +49,13 @@ void ViewImageWindow::on_pushButton_2_clicked()
         QString qstr = ui->listWidget->currentItem()->text();
         std::string s = qstr.toUtf8().constData();
         std::string first_token = s.substr(0, s.find(' '));
-        peer->GetImage(first_token);
+        std::cout<<"Before Get Image"<<std::endl;
+        StegImage temp = peer->GetImage(first_token);
+        std::string pathToImage =PlainImagesDirectory+'/'+temp.getPlainName();
+        std::cout<<pathToImage<<std::endl;
+        QString qstrimg = QString::fromStdString(pathToImage);
+        QPixmap pix(qstrimg);
+        ui->label->setPixmap(pix);
 
     }
 }
@@ -68,16 +79,17 @@ ViewImageWindow::~ViewImageWindow()
 void ViewImageWindow::on_pushButton_4_clicked()
 {
     std::map<std::string, std::string> temp;
-    temp = peer->SearchForStegNames(peer->GetUserName());
-    localMap = &temp;
+    std:: string username = peer->GetUserName();
+    temp = peer->SearchForStegNames(username);
+    localMap=&temp;
     showLists();
-
 }
 
 void ViewImageWindow::on_pushButton_5_clicked()
 {
     std::map<std::string, std::string> temp;
-    temp = peer->RemoteSearchForStegNames(peer->GetUserName());
+    std:: string username = peer->GetUserName();
+    temp = peer->RemoteSearchForStegNames(username);
     remoteMap = &temp;
     showLists();
 }

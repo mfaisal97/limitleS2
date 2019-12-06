@@ -28,6 +28,9 @@ class StegImage{
         int getUserViews(std::string name);
         std::string getCreator();
         std::string getPlainName();
+        std::string getImageContent(){
+            return info.imageContent;
+        }
 
         StegImageInfo getStegImageInfo();
 

@@ -730,7 +730,7 @@ static std::vector<std::string> ListFiles( const char* path){
   return files;
 }
 
-static std::vector<std::string> ListDirectories( const char* path){
+static std::vector<std::string> ListDirectories(char* path){
   std::vector<std::string>  dirs;
 
 	DIR *dir;

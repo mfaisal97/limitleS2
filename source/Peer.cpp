@@ -112,7 +112,9 @@ std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName
     std::cout<<filesNames[i] <<std::endl;
     if(filesNames[i] != "." && filesNames[i] != ".."){
     StegImage image(filesNames[i]);
+    std::cout<<filesNames[i]<<std::endl;
     if (image.hasViews(userName)){
+        std::cout<<"has views yasta"<<std::endl;
       rtr[image.GetHash()] = image.getPlainName();
     }
   }
@@ -128,22 +130,25 @@ bool Peer::UpdateStegImage(std::string stegImageName, std::string stegImageConte
   return false;
 }
 
-cv::Mat Peer::GetImage(std::string ImageID){
+StegImage Peer::GetImage(std::string ImageID){
   StegImage stegImage(ImageID);
-  cv::Mat image;
+ // cv::Mat image;
 
   if (stegImage.increaseViews(GetUserName(), -1)){
     stegImage.savePlainImage();
     stegImage.saveStegImage();
-
-    image = cv::imread(PlainImagesDirectory + stegImage.getPlainName());
-    if(image.empty()) {
-      std::cout << "Image Error\n";
-      exit(-1);
-    }
-    stegImage.removePlainImage();
   }
-  return image;
+    return stegImage;
+
+
+//    image = cv::imread(PlainImagesDirectory + stegImage.getPlainName());
+//    if(image.empty()) {
+//      std::cout << "Image Error\n";
+//      exit(-1);
+//    }
+//    //stegImage.removePlainImage();
+//  }
+//  return image;
 }
 
 bool Peer::IsClient(std::string userName){

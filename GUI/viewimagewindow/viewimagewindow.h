@@ -6,6 +6,8 @@
 #include <map>
 #include <string>
 #include "../../header/Peer.h"
+#include "../../header/StegImage.h"
+#include "../../common/Constants.h"
 
 namespace Ui {
 class ViewImageWindow;

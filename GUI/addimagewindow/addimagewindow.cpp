@@ -52,8 +52,10 @@ void AddImageWindow::on_pushButton_clicked()
             std::cout<<"Adding user "<<pickedUsers[i][0]<<"failed"<<std::endl;
         }
     }
+    std::string im = peer->GetUserName();
+    imageToBeAdded->addUser(im,100000000);
     imageToBeAdded->saveStegImage();
-    peer->RemoteUpdateStegImage(imageToBeAdded->GetHash());
+    //peer->RemoteUpdateStegImage(imageToBeAdded->GetHash());
     close();
 }
 
