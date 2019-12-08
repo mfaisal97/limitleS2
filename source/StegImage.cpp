@@ -30,6 +30,7 @@ bool StegImage::addImage(std::string plainName){
   info.plainName = plainName;
   int extInd = plainName.find('.');
   info.imageContent = ReadImageBinaryAsString(PlainImagesDirectory, plainName.substr(0, extInd), plainName.substr(extInd + 1));
+  std::cout << "Starting size\t" << info.imageContent.length() << "\t" << std::count(info.imageContent.begin(), info.imageContent.end(), '}') <<std::endl;
   return true;
 }
 
@@ -97,6 +98,10 @@ std::string StegImage::getPlainName(){
   return info.plainName;
 }
 
+std::string StegImage::getStegName(){
+  return info.GetHash();
+}
+
 std::string StegImage::AsString(){
   std::string str = info.AsString();
   std::string hash = info.GetHash();
@@ -114,6 +119,7 @@ char* StegImage::AsCharArray(){
 
 bool StegImage::savePlainImage(){
   int extInd =  info.plainName.find('.');
+  std::cout << "Ending size\t" << info.imageContent.length()<< "\t" << std::count(info.imageContent.begin(), info.imageContent.end(), '}') <<std::endl;
   return WriteImageBinaryAsString(PlainImagesDirectory,  info.plainName.substr(0, extInd),  info.plainName.substr(extInd + 1), info.imageContent);
 }
 

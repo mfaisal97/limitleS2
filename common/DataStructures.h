@@ -79,10 +79,15 @@ struct StegImageInfo{
   }
 
   void Initialize(std::string* str){
+    // std::cout << "Again size" <<  str->size()  << "\t" << std::count(str->begin(), str->end(), '}') << "\t" << str->substr(0, 100) << " ..... " << str->substr(str->size() - 2) << std::endl;
     plainName = GetBetweenBrackets(str);
+    // std::cout << "parsing 01 " <<  str->size() << "\t" << std::count(str->begin(), str->end(), '}') << "\t" << str->substr(0, 100) << std::endl;
     creator = GetBetweenBrackets(str);
+    // std::cout << "parsing 02 " <<  str->size() << "\t" << std::count(str->begin(), str->end(), '}') << "\t" << str->substr(0, 100) << std::endl;
     remainingViews = ParseIntMap(str);
+    // std::cout << "parsing 03 " <<  str->size() << "\t" << std::count(str->begin(), str->end(), '}') << "\t" << str->substr(0, 100) << " ..... " << str->substr(str->size() - 2) << std::endl;
     imageContent = GetBetweenBrackets(str);
+    // std::cout << "parsing 04 " <<  str->size() << "\t" << std::count(str->begin(), str->end(), '}') << "\t" << str->substr(0, 100)  << std::endl;
   }
 
   std::string GetHash(){

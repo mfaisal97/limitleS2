@@ -10,6 +10,10 @@ ViewImageWindow::ViewImageWindow(QWidget *parent,Peer* _peer) : QDialog(parent),
     std::map<std::string, std::string> temp2;
     std:: string username = peer->GetUserName();
     temp = peer->SearchForStegNames(username);
+
+    std::cout  << MapAsString(temp) << std::endl;
+
+
     //temp2 =peer->RemoteSearchForStegNames(username);
     localMap=&temp;
     remoteMap = &temp2;
@@ -49,14 +53,16 @@ void ViewImageWindow::on_pushButton_2_clicked()
         QString qstr = ui->listWidget->currentItem()->text();
         std::string s = qstr.toUtf8().constData();
         std::string first_token = s.substr(0, s.find(' '));
-        std::cout<<"Before Get Image"<<std::endl;
         StegImage temp = peer->GetImage(first_token);
         std::string pathToImage =PlainImagesDirectory+'/'+temp.getPlainName();
-        std::cout<<pathToImage<<std::endl;
+        std::cout<< "Showing image from:\t" << pathToImage<<std::endl;
         QString qstrimg = QString::fromStdString(pathToImage);
         QPixmap pix(qstrimg);
+        if (pix.isNull()){
+          std::cout << "eh dh y beh" << std::endl;
+        }
         ui->label->setPixmap(pix);
-
+        temp.removePlainImage();
     }
 }
 

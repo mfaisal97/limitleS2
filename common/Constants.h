@@ -14,13 +14,10 @@ static int PeerServerPort = 4051;
 static int ServiceDirectoryPort = 4050;
 
 //Shehab IP
-//static std::string ServiceDirectoryAddr = "10.40.49.213";
+// static std::string ServiceDirectoryAddr = "10.40.59.106";
 
 //mickey IP
-// static std::string ServiceDirectoryAddr = "10.40.35.176";
-
-//Khatter IP
-static std::string ServiceDirectoryAddr = "10.40.37.251";
+static std::string ServiceDirectoryAddr = "10.40.59.106";
 
 
 #endif

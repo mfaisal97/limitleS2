@@ -418,7 +418,7 @@ static std::string MapAsString(std::map<std::string, std::string> m){
   for (std::map<std::string, std::string>::iterator it=m.begin(); it!=m.end(); ++it){
     str = str + "\n{" + it->first + "}\n{" + it->second + "}";
   }
-  std::cout<< "Created: \t" << str <<std::endl;
+  // std::cout<< "Created: \t" << str <<std::endl;
   return str;
 }
 
@@ -427,7 +427,7 @@ static std::string IntMapAsString(std::map<std::string, int> m){
   for (std::map<std::string, int>::iterator it=m.begin(); it!=m.end(); ++it){
     str = str + "\n{" + it->first + "}\n{" + std::to_string(it->second) + "}";
   }
-  std::cout<< "Created: \t" << str <<std::endl;
+  // std::cout<< "Created: \t" << str <<std::endl;
   return str;
 }
 
@@ -509,22 +509,28 @@ static bool ValidUserNameString(std::string name){
 static bool createDirectoryWithFiles(std::string directoryName, int numberOfFiles, std::string message){
 	//open directory
 	int messageSize = message.size();
-	if (mkdir(ToCharArray(directoryName), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
-	{
-		std::cout << "could not create directories\t" + directoryName << std::endl;
-		return false;
+
+	DIR* dir = opendir(ToCharArray(directoryName));
+	if (dir){
+		closedir(dir);
 	}
-	else {
-
-		//partition
-		int j = 0;
-		for (int i = 0; i < messageSize; i += messageSize/numberOfFiles){
-
-			std::string str = message.substr(i, messageSize/numberOfFiles);
-			encode(str, directoryName + '/' + std::to_string(j) );
-
-			j++;
+	else if (ENOENT == errno){
+		if (mkdir(ToCharArray(directoryName), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0){
+			std::cout << "could not create directories\t" + directoryName << std::endl;
+			return false;
 		}
+	}
+
+	//partition
+	int j = 1000;
+	std::cout << "\n\nencoding \t" <<  message.size() << "\t" << std::count(message.begin(), message.end(), '}') << "\t" << message.substr(0, 100) << " ..... " << message.substr(message.size() - 2) << std::endl;
+	for (int i = 0; i < messageSize; i += messageSize/numberOfFiles){
+		std::cout << "for " << j << "\t" << i << std::endl;
+
+		std::string str = message.substr(i, messageSize/numberOfFiles);
+		encode(str, directoryName + '/' + std::to_string(j) );
+
+		j++;
 	}
 	return true;
 }
@@ -536,14 +542,16 @@ static int getNumberOfFiles(int messageSize){
 		std::cout << "Image Error\n";
 		exit(-1);
 	}
-	float maxNumberOfChars = image.cols * image.rows * 3 / 10;
-	float numberOfFiles = messageSize / maxNumberOfChars;
+	float maxNumberOfChars = floor(image.cols * image.rows * 3 / 10);
+	float numberOfFiles = 1.0* messageSize / maxNumberOfChars;
 	return ceil(numberOfFiles);
 
 }
 
 static std::string decodeAllInDirectory(std::string dirc, std::vector<std::string> files){
 	std::string decoded = "";
+	sort(files.begin(), files.end());
+	std::cout << "\n\ndecoding\n";
 	for(int it = 0; it < files.size(); ++it) {
 		cv::Mat image = cv::imread(dirc + "/" + files[it]);
 		if(image.empty()) {
@@ -551,7 +559,9 @@ static std::string decodeAllInDirectory(std::string dirc, std::vector<std::strin
 			exit(-1);
 		}
 		decoded += decode(Mat2Base64(image, "png"));
+		std::cout << "for " << files[it] << "\t" << decoded.size() << std::endl;
 }
+std::cout << "decoded \t" <<  decoded.size() << "\t" << std::count(decoded.begin(), decoded.end(), '}') << "\t" << decoded.substr(0, 100) << " ..... " << decoded.substr(decoded.size() - 2	) << std::endl;
 return decoded;
 }
 

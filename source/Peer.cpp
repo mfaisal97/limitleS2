@@ -115,7 +115,7 @@ std::map<std::string, std::string> Peer::SearchForStegNames(std::string userName
     std::cout<<filesNames[i]<<std::endl;
     if (image.hasViews(userName)){
         std::cout<<"has views yasta"<<std::endl;
-      rtr[image.GetHash()] = image.getPlainName();
+      rtr[filesNames[i]] = image.getPlainName();
     }
   }
 }
