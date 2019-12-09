@@ -108,7 +108,7 @@ std::string StegImage::AsString(){
   int numberOfFiles = getNumberOfFiles(str.size());
 
   bool created = createDirectoryWithFiles(StegImagesDirectory + "/" + hash, numberOfFiles, str);
-  std::string encoding = "";
+  std::string encoding = str;
 
   return encoding;
 }

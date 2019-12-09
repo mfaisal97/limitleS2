@@ -25,6 +25,7 @@ Peer::Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryP
 // so important y man
 Message *  Peer::doOperation(Message * message){
   std::string messageContent = FromCharArray((char*) message->getMessage());
+  std::cout << "\nReceived: \t" + message->marshalString() << "\n";
   message->setMessageType(MessageType::Reply);
 
   switch (message->getOperation()) {
@@ -53,6 +54,7 @@ Message *  Peer::doOperation(Message * message){
     default:
       message->setMessage((void*)ToCharArray(std::string("{Unidentified Directory Service Request}")), std::string("{Unidentified Directory Service Request}").size());
   }
+  std::cout << "\nSent: \t" + message->marshalString() << "\n";
   return message;
 }
 
@@ -158,8 +160,16 @@ bool Peer::IsClient(std::string userName){
 }
 
 bool Peer::IsStegImage(std::string stegName){
+  std::cout << "Searching for \t" << stegName << std::endl;
+  std::cout << "In Dir \t" << StegImagesDirectory << std::endl;
   std::vector<std::string> files = ListDirectories(ToCharArray(StegImagesDirectory));
-  return std::find(files.begin(), files.end(), stegName)!=files.end();
+  for (int i= 0; i < files.size(); ++i){
+    std::cout << files[i] << std::endl;
+    if (files[i] == stegName){
+      return true;
+    }
+  }
+  return false;
 }
 
 bool Peer::IsAuthorizedUpdate(std::string stegImageName, std::string stegImageContent){

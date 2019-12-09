@@ -24,6 +24,7 @@ void Login::on_pushButton_clicked()
     //std::cout<<"In logincpp checking if username and password is set"<<peer->GetAuthInfo();
     //peer->SetAuthInfo("mickey", "mouse");
         if(peer->RemoteSignIn()){
+          peer->RemoteConnectionInfoUpdate();
         close();
     }
 
