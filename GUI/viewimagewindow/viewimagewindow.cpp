@@ -61,7 +61,9 @@ void ViewImageWindow::on_pushButton_2_clicked()
         if (pix.isNull()){
           std::cout << "eh dh y beh" << std::endl;
         }
-        ui->label->setPixmap(pix);
+        int w = ui->label->width();
+        int h = ui->label->height();
+        ui->label->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
         temp.removePlainImage();
     }
 }
