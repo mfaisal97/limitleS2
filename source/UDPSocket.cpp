@@ -1,6 +1,8 @@
 #include "../header/UDPSocket.h"
 
 UDPSocket::UDPSocket(char *machine,  int port){
+    peerAddress= machine;
+    peerPort = port;
     if(( sock = socket(AF_INET, SOCK_DGRAM, 0))<0) {
         std::perror("socket failed");
         return;
@@ -14,6 +16,7 @@ UDPSocket::~UDPSocket ( ){
 
 
 int UDPSocket::writeToSocket (char * buffer, int maxBytes ){
+    makeDestSA(&peerAddr,peerAddress, peerPort);
     int aLength = sizeof(peerAddr);
     peerAddr.sin_family = AF_INET;
 
