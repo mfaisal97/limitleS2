@@ -129,7 +129,7 @@ static std::string encode(std::string message, std::string output_path, std::str
 				// if bit_count is 8 we pick the next char from the file and work on it
 
 
-                if(bit_count == 8) {
+        if(bit_count == 8) {
 					bit_count = 0;
 					file.get(ch);
 
@@ -395,6 +395,10 @@ static std::string GetBetweenBrackets(std::string* str){
 
 static int GetNumberBetweenBracket(std::string* str){
   std::string numStr = GetBetweenBrackets(str);
+	if (numStr.size() < 1){
+		std::cout << "could not parse the Int in \t" << numStr << std::endl;
+		return 0;
+	}
   return stoi(numStr);
 }
 

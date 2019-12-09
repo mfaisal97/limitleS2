@@ -13,10 +13,14 @@ Message::Message(char * _marshalled_base64) : Message(FromCharArray(_marshalled_
 
 Message::Message(std::string _marshalled_base64){
   std::string str = _marshalled_base64;
-  message_type = (MessageType)GetNumberBetweenBracket(&str);
-  operation = (OperationType)GetNumberBetweenBracket(&str);
-  rpc_id = GetNumberBetweenBracket(&str);
-  message_size = GetNumberBetweenBracket(&str);
+  if(str.length() <=1){
+    std::cout << "Could not get a reply!" << std::endl;
+  }else{
+    message_type = (MessageType)GetNumberBetweenBracket(&str);
+    operation = (OperationType)GetNumberBetweenBracket(&str);
+    rpc_id = GetNumberBetweenBracket(&str);
+    message_size = GetNumberBetweenBracket(&str);
+  }
   message = (void*) ToCharArray(str.substr(0, message_size));
 }
 

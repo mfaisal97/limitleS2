@@ -82,7 +82,7 @@ sockaddr_in UDPSocket::getPeerAddr(){
     }
     else if (ret == 0)
     {
-        std::cout << "timed out waiting for ack" << std::endl;
+        std::cout << "\ntimed out waiting for ack" << std::endl;
         // todo: resend the same packet again, or abort the transfer
     }
     else

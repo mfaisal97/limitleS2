@@ -195,6 +195,10 @@ bool Peer::RemoteSignUp(){
   Message* reply = serviceDirectory.execute(request);
   // DebugHere(request, reply);
   std::string replystr = FromCharArray((char*)reply->getMessage());
+  if(replystr.length() <=1){
+    std::cout << "Could not get a reply!" << std::endl;
+    return false;
+  }
   return GetBoolBetweenBracket(&replystr);
   std::cout <<"finished signing up\n";
   return true;
@@ -204,6 +208,10 @@ bool Peer::RemoteSignIn(){
   Message* request = new Message(OperationType::SignIn, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
   std::string replystr = FromCharArray((char*)reply->getMessage());
+  if(replystr.length() <=1){
+    std::cout << "\nCould not get a reply!" << std::endl;
+    return false;
+  }
   return GetBoolBetweenBracket(&replystr);
 }
 
@@ -211,6 +219,10 @@ bool Peer::RemoteSignOut(){
   Message* request = new Message(OperationType::SignOut, ToCharArray(userInfo.authInfo.AsString()), userInfo.authInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
   std::string replystr = FromCharArray((char*)reply->getMessage());
+  if(replystr.length() <=1){
+    std::cout << "\nCould not get a reply!" << std::endl;
+    return false;
+  }
   return GetBoolBetweenBracket(&replystr);
 }
 
@@ -218,6 +230,10 @@ bool Peer::RemoteConnectionInfoUpdate(){
   Message* request = new Message(OperationType::UpdateInfo, ToCharArray(userInfo.AsString()), userInfo.AsString().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
   std::string replystr = FromCharArray((char*)reply->getMessage());
+  if(replystr.length() <=1){
+    std::cout << "\nCould not get a reply!" << std::endl;
+    return false;
+  }
   return GetBoolBetweenBracket(&replystr);
 }
 
@@ -226,6 +242,10 @@ bool Peer::RemoteUpdatePeerClients(){
   Message* request = new Message(OperationType::GetOnline, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
   Message* reply = serviceDirectory.execute(request);
   std::string replystr = FromCharArray((char*)reply->getMessage());
+  if(replystr.length() <=1){
+    std::cout << "\nCould not get a reply!" << std::endl;
+    return false;
+  }
   std::map<std::string, ConnectionInfo> m = ParseConnectionInfoMap(&replystr);
   return UpdateClients(m);
 }
@@ -240,6 +260,10 @@ std::map<std::string, std::string> Peer::RemoteSearchForStegNames(std::string us
       Message* reply = client->execute(request);
       delete client;
       std::string replystr = FromCharArray((char*)reply->getMessage());
+      if(replystr.length() <=1){
+        std::cout << "\nCould not get a reply!" << std::endl;
+        return names;
+      }
       std::map<std::string, std::string> peerNames = ParseMap(&replystr);
       for (auto it2=peerNames.begin(); it2!=peerNames.end(); ++it2){
         names[it2->first] = it2->second;
@@ -257,6 +281,10 @@ bool Peer::RemoteRetrieveImage(std::string stegName){
       Message* reply = client->execute(request);
       delete client;
       std::string replystr = FromCharArray((char*)reply->getMessage());
+      if(replystr.length() <=1){
+        std::cout << "\nCould not get a reply!" << std::endl;
+        return false;
+      }
       if(replystr.size()>0){
 
         // bool done = WriteImageBinaryAsString(StegImagesDirectory, stegName, "png", replystr);
@@ -287,6 +315,10 @@ int Peer::RemoteUpdateStegImage(std::string stegName){
         Message* reply = client->execute(request);
         delete client;
         std::string replystr = FromCharArray((char*)reply->getMessage());
+        if(replystr.length() <=1){
+          std::cout << "\nCould not get a reply!" << std::endl;
+          return 0;
+        }
         if (GetBoolBetweenBracket(&replystr)){
           ++c;
         }
