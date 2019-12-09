@@ -71,7 +71,7 @@ bool Peer::UpdateClients(std::map<std::string, ConnectionInfo> connectionsInfo){
 }
 
 bool Peer::UpdateClient(std::string userName, ConnectionInfo connectionInfo){
-  clients[userName] = new Client(connectionInfo.userAddr, connectionInfo.portNo);
+  clients[userName] = connectionInfo;
   return true;
 }
 
@@ -236,7 +236,9 @@ std::map<std::string, std::string> Peer::RemoteSearchForStegNames(std::string us
   Message* request = new Message(OperationType::SearchViewables, ToCharArray(GetUserName()), GetUserName().size(), GetNextRPCID());
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
-      Message* reply = it->second->execute(request);
+      Client* client = new Client(it->second.userAddr, it->second.portNo);
+      Message* reply = client->execute(request);
+      delete client;
       std::string replystr = FromCharArray((char*)reply->getMessage());
       std::map<std::string, std::string> peerNames = ParseMap(&replystr);
       for (auto it2=peerNames.begin(); it2!=peerNames.end(); ++it2){
@@ -251,7 +253,9 @@ bool Peer::RemoteRetrieveImage(std::string stegName){
   Message* request = new Message(OperationType::GetViewables, ToCharArray(stegName), stegName.size(), GetNextRPCID());
   if (RemoteUpdatePeerClients()){
     for (auto it=clients.begin(); it!=clients.end(); ++it){
-      Message* reply = it->second->execute(request);
+      Client* client = new Client(it->second.userAddr, it->second.portNo);
+      Message* reply = client->execute(request);
+      delete client;
       std::string replystr = FromCharArray((char*)reply->getMessage());
       if(replystr.size()>0){
 
@@ -279,7 +283,9 @@ int Peer::RemoteUpdateStegImage(std::string stegName){
     Message* request = new Message(OperationType::UpdateImage, ToCharArray(str), str.size(), GetNextRPCID());
     if (RemoteUpdatePeerClients()){
       for (auto it=clients.begin(); it!=clients.end(); ++it){
-        Message* reply = it->second->execute(request);
+        Client* client = new Client(it->second.userAddr, it->second.portNo);
+        Message* reply = client->execute(request);
+        delete client;
         std::string replystr = FromCharArray((char*)reply->getMessage());
         if (GetBoolBetweenBracket(&replystr)){
           ++c;

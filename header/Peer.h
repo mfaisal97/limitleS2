@@ -15,7 +15,7 @@ class Peer : public Server{
   private:
     UserInfo userInfo;
     Client serviceDirectory;
-    std::map<std::string, Client*> clients;
+    std::map<std::string, ConnectionInfo> clients;
   public:
     Peer(std::string _name, std::string _password, int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
     Peer(int _peerPort, char* serviceDirectoryHostname, int _serviceDirectoryPortNo);
