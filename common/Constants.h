@@ -7,7 +7,7 @@ const std::string StegPassword = "Ay 7aga";
 const std::string defaultImagePath = "Data/def/defImage.png";
 const std::string PlainImagesDirectory = "Data/images/plain";
 const std::string StegImagesDirectory = "Data/images/Steg";
-const int MAX_MESSAGE_SIZE = 1024;
+const int MAX_MESSAGE_SIZE = 102400;
 
 //config
 static int PeerServerPort = 4051;

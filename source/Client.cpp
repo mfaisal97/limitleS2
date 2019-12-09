@@ -11,9 +11,12 @@ Client::~Client(){
 }
 
 Message *  Client::execute(Message * _message){
+  std::cout << "Client to\t" << udpSocket->getPeerAddr().sin_addr.s_addr << " \tsent:\n" << _message->marshalString();
   udpSocket->writeToSocket(_message->marshal(), -1);
   char* returned = new char[MAX_MESSAGE_SIZE];
   udpSocket->readFromSocketWithTimeout(returned, MAX_MESSAGE_SIZE, 15, 0);
   // std::cout <<"got this\t" << FromCharArray(returned);
-  return new Message(returned);
+  Message* m = new Message(returned);
+  std::cout << "Client to\t" << udpSocket->getPeerAddr().sin_addr.s_addr << " \tReceived:\n" << m->marshalString();
+  return m;
 }

@@ -244,10 +244,16 @@ bool Peer::RemoteRetrieveImage(std::string stegName){
       Message* reply = it->second->execute(request);
       std::string replystr = FromCharArray((char*)reply->getMessage());
       if(replystr.size()>0){
-        bool done = WriteImageBinaryAsString(StegImagesDirectory, stegName, "png", replystr);
-        if (done){
-          return true;
-        }
+
+        // bool done = WriteImageBinaryAsString(StegImagesDirectory, stegName, "png", replystr);
+        // if (done){
+        //   return true;
+        // }
+
+        StegImageInfo sii;
+        sii.Initialize(&replystr);
+        StegImage si(sii);
+        si.saveStegImage();
       }
     }
   }

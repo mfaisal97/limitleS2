@@ -6,17 +6,13 @@ ViewImageWindow::ViewImageWindow(QWidget *parent,Peer* _peer) : QDialog(parent),
 {
     ui->setupUi(this);
     setPeer(_peer);
-    std::map<std::string, std::string> temp;
-    std::map<std::string, std::string> temp2;
+
     std:: string username = peer->GetUserName();
-    temp = peer->SearchForStegNames(username);
-
-    std::cout  << MapAsString(temp) << std::endl;
-
-
     //temp2 =peer->RemoteSearchForStegNames(username);
-    localMap=&temp;
-    remoteMap = &temp2;
+    localMap = new std::map<std::string, std::string>;
+    *localMap = peer->SearchForStegNames(username);
+    remoteMap = new std::map<std::string, std::string>;
+    *remoteMap = peer->RemoteSearchForStegNames(username);
     showLists();
     // QPixmap pix("/home/khatter/Desktop/GUI_Distrib/GUI/prof.jpg");
     // ui->label->setPixmap(pix);
@@ -24,7 +20,8 @@ ViewImageWindow::ViewImageWindow(QWidget *parent,Peer* _peer) : QDialog(parent),
 
 void ViewImageWindow::showLists()
 {
-
+    ui->listWidget->clear();
+    ui->listWidget_2->clear();
     for (auto cursor = localMap->begin(); cursor != localMap->end(); ++cursor)
     {
         std::string temp = cursor->first + " " + cursor->second;
@@ -76,6 +73,18 @@ void ViewImageWindow::on_pushButton_3_clicked()
         std::string s = qstr.toUtf8().constData();
         std::string first_token = s.substr(0, s.find(' '));
         peer->RemoteRetrieveImage(first_token);
+        StegImage temp = peer->GetImage(first_token);
+        std::string pathToImage =PlainImagesDirectory+'/'+temp.getPlainName();
+        std::cout<< "Showing image from:\t" << pathToImage<<std::endl;
+        QString qstrimg = QString::fromStdString(pathToImage);
+        QPixmap pix(qstrimg);
+        if (pix.isNull()){
+          std::cout << "eh dh y beh" << std::endl;
+        }
+        int w = ui->label->width();
+        int h = ui->label->height();
+        ui->label->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
+        temp.removePlainImage();
     }
 }
 
@@ -86,18 +95,15 @@ ViewImageWindow::~ViewImageWindow()
 
 void ViewImageWindow::on_pushButton_4_clicked()
 {
-    std::map<std::string, std::string> temp;
     std:: string username = peer->GetUserName();
-    temp = peer->SearchForStegNames(username);
-    localMap=&temp;
+    *localMap = peer->SearchForStegNames(username);
     showLists();
 }
 
 void ViewImageWindow::on_pushButton_5_clicked()
 {
-    std::map<std::string, std::string> temp;
+
     std:: string username = peer->GetUserName();
-    temp = peer->RemoteSearchForStegNames(username);
-    remoteMap = &temp;
+    *remoteMap = peer->RemoteSearchForStegNames(username);
     showLists();
 }
