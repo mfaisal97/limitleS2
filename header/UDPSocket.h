@@ -12,6 +12,8 @@
 #include <iostream>
 #include <cstring>
 
+#include "../common/common.h"
+
 class UDPSocket
 {
     protected:
