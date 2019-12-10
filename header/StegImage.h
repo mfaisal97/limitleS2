@@ -21,6 +21,7 @@ class StegImage{
         bool increaseViews(std::string userName, int inc);
         bool setCreator(std::string userName);
         bool changePlainName(std::string plainName);
+        std::string reducedAsString();
 
         //getters
         bool canIncreaseViews(std::string name, int inc);

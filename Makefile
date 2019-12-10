@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mickey/BackupSSD/02projects/limitleS2
+CMAKE_SOURCE_DIR = /media/shehab/E/college/Semester7/distributed/forked
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mickey/BackupSSD/02projects/limitleS2
+CMAKE_BINARY_DIR = /media/shehab/E/college/Semester7/distributed/forked
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mickey/BackupSSD/02projects/limitleS2/CMakeFiles /home/mickey/BackupSSD/02projects/limitleS2/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/shehab/E/college/Semester7/distributed/forked/CMakeFiles /media/shehab/E/college/Semester7/distributed/forked/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mickey/BackupSSD/02projects/limitleS2/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/shehab/E/college/Semester7/distributed/forked/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -216,6 +216,33 @@ GUI/mainwidget/mainwidget.s: GUI/mainwidget/mainwidget.cpp.s
 GUI/mainwidget/mainwidget.cpp.s:
 	$(MAKE) -f CMakeFiles/limitleS2.dir/build.make CMakeFiles/limitleS2.dir/GUI/mainwidget/mainwidget.cpp.s
 .PHONY : GUI/mainwidget/mainwidget.cpp.s
+
+GUI/notifications/notifications.o: GUI/notifications/notifications.cpp.o
+
+.PHONY : GUI/notifications/notifications.o
+
+# target to build an object file
+GUI/notifications/notifications.cpp.o:
+	$(MAKE) -f CMakeFiles/limitleS2.dir/build.make CMakeFiles/limitleS2.dir/GUI/notifications/notifications.cpp.o
+.PHONY : GUI/notifications/notifications.cpp.o
+
+GUI/notifications/notifications.i: GUI/notifications/notifications.cpp.i
+
+.PHONY : GUI/notifications/notifications.i
+
+# target to preprocess a source file
+GUI/notifications/notifications.cpp.i:
+	$(MAKE) -f CMakeFiles/limitleS2.dir/build.make CMakeFiles/limitleS2.dir/GUI/notifications/notifications.cpp.i
+.PHONY : GUI/notifications/notifications.cpp.i
+
+GUI/notifications/notifications.s: GUI/notifications/notifications.cpp.s
+
+.PHONY : GUI/notifications/notifications.s
+
+# target to generate assembly for a file
+GUI/notifications/notifications.cpp.s:
+	$(MAKE) -f CMakeFiles/limitleS2.dir/build.make CMakeFiles/limitleS2.dir/GUI/notifications/notifications.cpp.s
+.PHONY : GUI/notifications/notifications.cpp.s
 
 GUI/viewimagewindow/viewimagewindow.o: GUI/viewimagewindow/viewimagewindow.cpp.o
 
@@ -560,6 +587,9 @@ help:
 	@echo "... GUI/mainwidget/mainwidget.o"
 	@echo "... GUI/mainwidget/mainwidget.i"
 	@echo "... GUI/mainwidget/mainwidget.s"
+	@echo "... GUI/notifications/notifications.o"
+	@echo "... GUI/notifications/notifications.i"
+	@echo "... GUI/notifications/notifications.s"
 	@echo "... GUI/viewimagewindow/viewimagewindow.o"
 	@echo "... GUI/viewimagewindow/viewimagewindow.i"
 	@echo "... GUI/viewimagewindow/viewimagewindow.s"

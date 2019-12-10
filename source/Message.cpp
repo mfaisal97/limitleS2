@@ -9,6 +9,7 @@ Message::Message(OperationType _operation, void * p_message, int p_message_size,
 }
 
 Message::Message(char * _marshalled_base64) : Message(FromCharArray(_marshalled_base64)){
+  delete _marshalled_base64;
 }
 
 Message::Message(std::string _marshalled_base64){

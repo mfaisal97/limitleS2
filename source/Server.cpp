@@ -27,6 +27,7 @@ void Server::sendReply (Message * _message){
   //cout << "habd: " << str  << "\t"<< sa.sin_port << "\t" << m->habd << "\n";
   // std::cout << "Sent this" << FromCharArray(_message->marshal()) <<std::endl;
   child->writeToSocket(_message->marshal(), -1);
+  delete child;
 }
 
 
@@ -39,6 +40,7 @@ void Server::serveRequest(){
     //child
     if(fork() == 0){
       sendReply(m);
+      delete m;
       break;
     }
     //parent

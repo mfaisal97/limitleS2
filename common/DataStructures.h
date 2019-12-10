@@ -91,7 +91,8 @@ struct StegImageInfo{
   }
 
   std::string GetHash(){
-    return GetStringHash(StringAsString(plainName) + StringAsString(creator) + StringAsString(imageContent));
+    // return GetStringHash(StringAsString(plainName) + StringAsString(creator) + StringAsString(imageContent));
+    return GetStringHash(StringAsString(plainName) + StringAsString(creator));
   }
 };
 

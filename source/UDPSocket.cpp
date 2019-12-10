@@ -10,7 +10,11 @@ UDPSocket::UDPSocket(char *machine,  int port){
 }
 
 UDPSocket::~UDPSocket ( ){
-    close(sock);
+    if (close(sock) ==-1){
+      std::cout << "could not close socket\n";
+    }else{
+      std::cout << "Closed socket :D\n";
+    }
 }
 
 

@@ -35,6 +35,10 @@ add_executable(limitleS2
   GUI/viewimagewindow/viewimagewindow.h
   GUI/viewimagewindow/viewimagewindow.ui
 
+  GUI/notifications/notifications.cpp
+  GUI/notifications/notifications.h
+  GUI/notifications/notifications.ui
+
   source/Client.cpp
   source/Message.cpp
   source/Peer.cpp

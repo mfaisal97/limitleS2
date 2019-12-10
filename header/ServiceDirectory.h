@@ -4,12 +4,14 @@
 #include <map>
 #include <vector>
 #include "Server.h"
+#include "StegImage.h"
 #include "../common/DataStructures.h"
 
 class ServiceDirectory : public Server
 {
     private:
       std::map<std::string, UserInfo> Users;
+      std::vector<std::string>notifications;
     public:
         ServiceDirectory(int _listen_port);
 
@@ -24,6 +26,7 @@ class ServiceDirectory : public Server
         bool SignUp(UserInfo userInfo);
         bool SignIn(AuthInfo authInfo);
         bool SignOut(AuthInfo authInfo);
+        bool AddReducedImage(const StegImageInfo& stegImageInfo);
 
         bool UpdateConnectionInfo(UserInfo userInfo);
 

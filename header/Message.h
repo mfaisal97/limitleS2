@@ -7,9 +7,10 @@
 
 enum MessageType { Request, Reply};
 enum OperationType {
-  SignUp, SignIn, SignOut,
+  SignUp, SignIn, SignOut,HandleReducedImage,
   UpdateInfo, GetOnline, SearchViewables,
-  GetViewables, UpdateImage,
+  GetViewables, UpdateImage, GetPartNumber,
+  GetNumberOfParts,GetNotification,
   splitted};
 
 class Message

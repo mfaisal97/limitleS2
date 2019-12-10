@@ -70,6 +70,18 @@ Message *  ServiceDirectory::doOperation(Message * message){
       message->setMessage((void*)ToCharArray(ConnectionInfoMapAsString(u)), ConnectionInfoMapAsString(u).length());
       break;
     }
+
+    case OperationType::HandleReducedImage:{
+      // parsing data
+      StegImageInfo data;
+      std::string decodedMsg=decode(messageContent);
+      data.Initialize(&decodedMsg);
+      // processing request
+      bool res = AddReducedImage(data);
+      // writing reply
+      message->setMessage((void*)ToCharArray(BoolAsString(res)), BoolAsString(res).length());
+      break;
+    }
     default:
       message->setMessage((void*)ToCharArray(std::string("{Unidentified Directory Service Request}")), std::string("{Unidentified Directory Service Request}").size());
   }
@@ -142,6 +154,12 @@ bool ServiceDirectory::SignOut(AuthInfo authInfo){
   }
   return false;
 }
+
+bool ServiceDirectory::AddReducedImage(const StegImageInfo& stegImageInfo){
+  StegImage stegImage(stegImageInfo);
+  return stegImage.saveStegImage();
+}
+
 
 
 std::map<std::string, ConnectionInfo> ServiceDirectory::GetOnlineUsers(){

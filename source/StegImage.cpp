@@ -1,5 +1,6 @@
 #include "../header/StegImage.h"
 
+
 StegImage::StegImage(std::string plainName, std::string creator){
     //std::cout<<"Entered Constructor\t"<<"Image Name: "<<plainName<<std::endl;
     addImage(plainName);
@@ -56,6 +57,15 @@ bool StegImage::increaseViews(std::string userName, int inc){
   }
 
   return false;
+}
+
+std::string StegImage::reducedAsString(){
+    ////ANA AHO YA MANNN
+    cv::Mat img = Base2Mat(info.imageContent);
+    cv::Mat outImg;
+    cv::resize(img,outImg,cv::Size(DEFAULT_IMAGE_SIZE,DEFAULT_IMAGE_SIZE),0,0,cv::INTER_LINEAR);
+    //std::string reducedImg = encode(Mat2Base64(outImg,"png"), std::string output_path, std::string ext = "png", std::string input_path = defaultImagePath)
+    return StringAsString(info.plainName) + StringAsString(info.creator) + IntMapAsString(info.remainingViews) + StringAsString(Mat2Base64(outImg,"png"));
 }
 
 bool StegImage::setCreator(std::string userName){

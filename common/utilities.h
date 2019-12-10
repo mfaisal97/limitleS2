@@ -32,6 +32,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
 
 
 static bool isBitSet(char ch, int pos);
@@ -348,13 +349,11 @@ static std::string decode(std::string steg_base64) {
 
 static void setBroadcast(int s){
     int arg;
-    #ifdef SO_BROADCAST
     arg =1;
-    if(setsockopt(s, SOL_SOCKET, SO_BROADCAST, &arg, sizeof(arg)) <0){
+    if(setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &arg, sizeof(arg)) <0){
         perror("setsockopt SO_BROADCAST---");
         exit(-1);
     }
-    #endif
 }
 
 static void makeLocalSA(struct sockaddr_in *sa){
@@ -709,7 +708,8 @@ static std::string ReadImageBinaryAsString(std::string directoryPath, std::strin
 	if (image.empty()){
 
 		std::cout << "Image Error: \t"  +directoryPath + "/" + imageName + "." + ext + "\n" ;
-		exit(-1);
+		return "";
+		//exit(-1);
 	}
 
 	std::string stegImageStr = Mat2Base64(image, ext);
